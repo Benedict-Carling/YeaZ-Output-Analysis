@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 
 
@@ -15,3 +16,5 @@ for index, item in df.iterrows():
     print(item)
     print(item["A"])
     print(item["B"])
+
+df.to_pickle("my_data.pkl")

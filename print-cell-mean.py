@@ -1,13 +1,13 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-INPUT_PATH = "input-data/feb22/8.csv"
+df= pd.read_pickle("feb22data.pkl")
 
-data = pd.read_csv(INPUT_PATH)
-redData = data[data["Channel"] == "Red"]
+df= df[df["size"] > 40]
+df= df[df["size"] < 300]
 
 
-plt.hist(redData["Mean"], density=True, bins=50)  # density=False would make counts
+plt.hist(df["size"], density=True, bins=250)  # density=False would make counts
 plt.ylabel("Probability")
 plt.xlabel("Data")
 plt.title("Mean cell red value")

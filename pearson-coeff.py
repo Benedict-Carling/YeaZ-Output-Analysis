@@ -8,8 +8,8 @@ from math import isclose
 import matplotlib.pyplot as plt
 import h5py
 
-ND2FILE = "input-data/feb22-mask/ChannelMono,Red,Green,Blue_Seq0000.nd2"
-MASKFILE = "input-data/feb22-mask/newmaskfile.h5"
+ND2FILE = "data/feb22-mask/ChannelMono,Red,Green,Blue_Seq0000.nd2"
+MASKFILE = "data/feb22-mask/newmaskfile.h5"
 
 
 def readh5mask(path):
@@ -93,6 +93,7 @@ def CreateCellDataFrama(df):
                     "cellId": cellId,
                     "mask-box": [x1, y1, x2, y2],
                     "binary-cell-mask": BinaryCellMask,
+                    "size": BinaryCellMask.sum(),
                 },
                 ignore_index=True,
             )
@@ -104,4 +105,5 @@ h5df = readh5mask(MASKFILE)
 totaldf = pd.concat([nd2df, h5df])
 
 celldf = CreateCellDataFrama(totaldf)
+celldf.to_pickle("feb22data.pkl")
 print(celldf)
