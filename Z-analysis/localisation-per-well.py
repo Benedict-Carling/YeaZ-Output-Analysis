@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import diptest
 
 df = pd.read_pickle("data/mar15/cells.pkl")
 
@@ -11,10 +12,19 @@ df["maxLocalisation"] = df[
     ["greenBlueCorrelation1", "greenBlueCorrelation2", "greenBlueCorrelation0"]
 ].max(axis=1)
 
-plt.hist(
-    df["maxLocalisation"], density=True, bins=1000
+# This command counts all items in the group
+groupeddf = df.groupby("field-of-view").mean()
+print(groupeddf)
+
+plt.bar(
+    list(range(1, 97)),
+    groupeddf["maxLocalisation"],
+    tick_label=[str(numeric_string) for numeric_string in list(range(1, 97))],
+    width=0.4,
 )  # density=False would make counts
 plt.ylabel("Probability")
 plt.xlabel("Data")
-plt.title("Mean cell red value")
+plt.xticks(rotation=90)
+plt.title("Number of Cells per well")
+
 plt.show()
