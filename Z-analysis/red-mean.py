@@ -21,7 +21,7 @@ print(lowPopulation)
 print(highPopulation)
 
 
-plt.hist(df["meanRedValue"], density=True, bins=100)  # density=False would make counts
+plt.hist(df["meanRedValue"], density=True, bins=1000)  # density=False would make counts
 plt.ylabel("Probability")
 plt.xlabel("Data")
 plt.title("Mean cell red value")

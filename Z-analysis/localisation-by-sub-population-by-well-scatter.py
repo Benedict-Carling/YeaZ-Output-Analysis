@@ -13,11 +13,11 @@ df["maxLocalisation"] = df[
     ["greenBlueCorrelation1", "greenBlueCorrelation2", "greenBlueCorrelation0"]
 ].max(axis=1)
 
-lowPopulation = df[df["meanRedValue"] > 78]
-lowPopulation = lowPopulation[lowPopulation["meanRedValue"] < 93]
+lowPopulation = df[df["meanRedValue"] > 76]
+lowPopulation = lowPopulation[lowPopulation["meanRedValue"] < 94]
 
-highPopulation = df[df["meanRedValue"] > 95]
-highPopulation = highPopulation[highPopulation["meanRedValue"] < 122]
+highPopulation = df[df["meanRedValue"] > 94]
+highPopulation = highPopulation[highPopulation["meanRedValue"] < 125]
 
 
 lowPopulationGrouped = lowPopulation.groupby("field-of-view", as_index=False).mean()
@@ -43,20 +43,10 @@ x = np.arange(len(species))  # the label locations
 width = 0.25  # the width of the bars
 multiplier = 0
 
-fig, ax = plt.subplots(layout="constrained")
-
-for attribute, measurement in penguin_means.items():
-    offset = width * multiplier
-    rects = ax.scatter(x + offset, measurement, width, label=attribute)
-    # ax.bar_label(rects, padding=3)
-    multiplier += 1
-
-# Add some text for labels, title and custom x-axis tick labels, etc.
-ax.set_ylabel("Length (mm)")
-ax.set_title("Penguin attributes by species")
-ax.set_xticks(x + width, species)
-plt.xticks(rotation=90)
-ax.legend(loc="upper left", ncols=3)
-# ax.set_ylim(0, 250)
-
+plt.scatter(
+    penguin_means["High Subpopulation"], penguin_means["Low Subpopulation"], alpha=0.3
+)  # density=False would make counts
+plt.ylabel("Low subpopulation localisation score")
+plt.xlabel("High subpopulation localisation score")
+plt.title("Comparision of localisation per population")
 plt.show()

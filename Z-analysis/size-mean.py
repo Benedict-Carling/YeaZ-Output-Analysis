@@ -9,7 +9,7 @@ df = df[df["size"] < 600]
 print(df)
 
 
-plt.hist(df["size"], density=True, bins=100)  # density=False would make counts
+plt.hist(df["redMeanValue"], density=True, bins=100)  # density=False would make counts
 plt.ylabel("Probability")
 plt.xlabel("Data")
 plt.title("Mean cell red value")

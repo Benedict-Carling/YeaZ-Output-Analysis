@@ -25,33 +25,33 @@ dip0 = diptest.dipstat(df["greenBlueCorrelation0"])
 print(dip0)
 
 
-# plt.hist(
-#     df["maxLocalisation"], density=True, bins=300
-# )  # density=False would make counts
-# plt.ylabel("Probability")
-# plt.xlabel("Data")
-# plt.title("Max Localistation per cell")
+plt.hist(
+    df["maxLocalisation"], density=True, bins=300
+)  # density=False would make counts
+plt.ylabel("Probability")
+plt.xlabel("Data")
+plt.title("Max Localistation per cell")
 
-# plt.hist(
-#     df["greenBlueCorrelation0"], density=True, bins=300
-# )  # density=False would make counts
-# plt.ylabel("Probability")
-# plt.xlabel("Data")
-# plt.title("Localistaion z=-1")
+plt.hist(
+    df["greenBlueCorrelation0"], density=True, bins=300
+)  # density=False would make counts
+plt.ylabel("Probability")
+plt.xlabel("Data")
+plt.title("Localistaion z=-1")
 
-# plt.hist(
-#     df["greenBlueCorrelation1"], density=True, bins=300
-# )  # density=False would make counts
-# plt.ylabel("Probability")
-# plt.xlabel("Data")
-# plt.title("Localistaion z=0")
+plt.hist(
+    df["greenBlueCorrelation1"], density=True, bins=300
+)  # density=False would make counts
+plt.ylabel("Probability")
+plt.xlabel("Data")
+plt.title("Localistaion z=0")
 
-# plt.hist(
-#     df["greenBlueCorrelation2"], density=True, bins=300
-# )  # density=False would make counts
-# plt.ylabel("Probability")
-# plt.xlabel("Data")
-# plt.title("Localistaion z=1")
+plt.hist(
+    df["greenBlueCorrelation2"], density=True, bins=300
+)  # density=False would make counts
+plt.ylabel("Probability")
+plt.xlabel("Data")
+plt.title("Investigation Z-stack importance")
 
 
-# plt.show()
+plt.show()
