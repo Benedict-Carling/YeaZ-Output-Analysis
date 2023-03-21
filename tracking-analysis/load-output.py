@@ -3,14 +3,23 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 
-df = pd.read_csv('tracking-analysis/fov2-0-30.csv')
+df = pd.read_csv('tracking-analysis/fov8-0-30 copy.csv')
 
 print(df)
+
+# 1: 277 367
+# 2: 185
+# 2: 401 514
+# 7: 344
+# 8: 170 146 222 
 
 # Channel name "BF_KS" or "GFP_KS"
 # df = df[df["Channel"] == "BF_KS"]
 df = df[df["Time"] <= 30]
-# df = df[df["Area"] <= 250]
+df = df[df["Cell"] != 170]
+df = df[df["Cell"] != 146]
+df = df[df["Cell"] != 222]
+
 print(df.columns.values.tolist())
 
 # minCells = df.groupby("Cell",as_index=False).agg(','.join)
@@ -28,6 +37,8 @@ for row in nptable:
 
 plt.ylabel('Mean Cell size')
 plt.xlabel('Time');
-plt.title("Mean cell size over time FOV 2")
+plt.title("Mean cell size over time FOV 8")
 
 plt.show()
+
+print(df.sort_values("Area"))
