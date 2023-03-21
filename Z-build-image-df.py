@@ -92,6 +92,7 @@ def readh5mask(path):
 nd2df = Nd2toDataFrame(ND2FILE)
 h5df = readh5mask(MASKFILE)
 
+
 def getMaskBoxForInt(cellId: int, image):
     mask = np.copy(image)
     where = np.array(np.where(mask == cellId))
@@ -152,23 +153,26 @@ def CreateCellDataFrama(df):
             celldf = pd.concat(
                 [
                     celldf,
-                    pd.DataFrame([
-                {
-                    "image-index": item["image-index"],
-                    "field-of-view": item["field-of-view"],
-                    "cellId": cellId,
-                    "size": BinaryCellMask.sum(),
-                    "meanRedValue": redCell.mean(),
-                    "meanBlueValue": blueCell.mean(),
-                    "meanGreenValue": greenCell.mean(),
-                    "greenBlueCorrelation": np.corrcoef(roundBlueflat, roundGreenflat)[
-                        0
-                    ][1],
-                }])],
+                    pd.DataFrame(
+                        [
+                            {
+                                "image-index": item["image-index"],
+                                "field-of-view": item["field-of-view"],
+                                "cellId": cellId,
+                                "size": BinaryCellMask.sum(),
+                                "meanRedValue": redCell.mean(),
+                                "meanBlueValue": blueCell.mean(),
+                                "meanGreenValue": greenCell.mean(),
+                                "greenBlueCorrelation": np.corrcoef(
+                                    roundBlueflat, roundGreenflat
+                                )[0][1],
+                            }
+                        ]
+                    ),
+                ],
                 ignore_index=True,
             )
     return celldf
-
 
 
 totaldf = pd.concat([nd2df, h5df])
