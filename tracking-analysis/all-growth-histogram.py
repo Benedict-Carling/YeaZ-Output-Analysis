@@ -79,82 +79,73 @@ growth5_6 = growth56[~np.isnan(growth56)]
 growth78 = np.array(pd.concat([celldf.iloc[6]["growth"], celldf.iloc[7]["growth"]]))
 growth7_8 = growth78[~np.isnan(growth78)]
 
+big = pd.DataFrame(columns=["growth"])
 
-growthArray = [growth1_2, growth3_4, growth5_6, growth7_8]
+for item in growth1_2:
+    big = pd.concat(
+        [
+            big,
+            pd.DataFrame(
+                [
+                    {
+                        "growth": item,
+                    }
+                ]
+            ),
+        ],
+        ignore_index=True,
+    )
+for item in growth3_4:
+    big = pd.concat(
+        [
+            big,
+            pd.DataFrame(
+                [
+                    {
+                        "growth": item,
+                    }
+                ]
+            ),
+        ],
+        ignore_index=True,
+    )
+for item in growth5_6:
+    big = pd.concat(
+        [
+            big,
+            pd.DataFrame(
+                [
+                    {
+                        "growth": item,
+                    }
+                ]
+            ),
+        ],
+        ignore_index=True,
+    )
+for item in growth7_8:
+    big = pd.concat(
+        [
+            big,
+            pd.DataFrame(
+                [
+                    {
+                        "growth": item,
+                    }
+                ]
+            ),
+        ],
+        ignore_index=True,
+    )
 
-print(len(growthArray))
-print(len([1, 2, 3, 4]))
 
-print("Including new cell that appear with size less than", GROWTH_LIMIT)
-print(
-    "mean new cell growth fov1&2: ",
-    round(growth1_2.mean(), 3),
-    " with standard error: ",
-    round(stats.sem(growth1_2), 3),
-)
-print(
-    "mean new cell growth fov3&4: ",
-    round(growth3_4.mean(), 3),
-    " with standard error: ",
-    round(stats.sem(growth3_4), 3),
-)
-print(
-    "mean new cell growth fov5&6: ",
-    round(growth5_6.mean(), 3),
-    " with standard error: ",
-    round(stats.sem(growth5_6), 3),
-)
-print(
-    "mean new cell growth fov7&8: ",
-    round(growth7_8.mean(), 3),
-    " with standard error: ",
-    round(stats.sem(growth7_8), 3),
-)
+print(big)
+print(big[big["growth"] <= 23])
 
-
-# import matplotlib.pyplot as plt
-# import numpy as np
-# from collections import Counter
-
-# id = []
-# growth12_counts = []
-# growth34_counts = []
-# growth56_counts = []
-# growth78_counts = []
-
-# for i in range(-10,29):
-#     id.append(str(i))
-#     growth12_counts.append(Counter(growth1_2)[i]/len(growth1_2))
-#     growth34_counts.append(Counter(growth3_4)[i]/len(growth3_4))
-#     growth56_counts.append(Counter(growth5_6)[i]/len(growth5_6))
-#     growth78_counts.append(Counter(growth7_8)[i]/len(growth7_8))
-
-# species = id
-# penguin_means = {
-#     'NLIMPRO, pHLM': growth12_counts,
-#     'NLIMGLN, pHLM': growth34_counts,
-#     'NLIMPRO, HO::HLM': growth56_counts,
-#     'NLIMGLN, HO::HLM': growth78_counts,
-# }
-
-# x = np.arange(len(species))  # the label locations
-# width = 0.2  # the width of the bars
-# multiplier = 0
-
-# fig, ax = plt.subplots(layout='constrained')
-
-# for attribute, measurement in penguin_means.items():
-#     offset = width * multiplier
-#     rects = ax.bar(x + offset, measurement, width, label=attribute)
-#     # ax.bar_label(rects, padding=3)
-#     multiplier += 1
-
-# # Add some text for labels, title and custom x-axis tick labels, etc.
-# ax.set_ylabel('Probability')
-# ax.set_xlabel('Growth in pixels in 20 mins')
-# ax.set_title('Growth Probability')
-# ax.set_xticks(x + width, species)
-# ax.legend(loc='upper right', ncols=1)
-# ax.set_ylim(0, 0.1)
-
+# plt.hist(big["growth"], density=True, bins=400)  # density=False would make counts
+# plt.ylabel("Probability")
+# plt.xlabel("Data")
+# plt.title("Mean cell red value")
 # plt.show()
+
+# Learning no cell should grow more than 23px in one step, this leaves 10075 out of 10260

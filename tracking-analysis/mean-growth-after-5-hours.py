@@ -44,12 +44,11 @@ for file in files[:1]:
     ]
     new_cells = df[df["Cell"].isin(valid_new_cell_ids)]
     # Get cells after 12 time points
-    growth = new_cells.groupby("Cell",as_index=False).count()
-    growth_min_12_ids = growth[growth["Time"]>=12]["Cell"]
+    growth = new_cells.groupby("Cell", as_index=False).count()
+    growth_min_12_ids = growth[growth["Time"] >= 12]["Cell"]
     new_long_small_cells = new_cells[new_cells["Cell"].isin(growth_min_12_ids)]
     first12 = new_long_small_cells.groupby("Cell").head(12)
 
-    
     print(first12[:20])
 
 #     celldf = pd.concat(

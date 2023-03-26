@@ -44,11 +44,13 @@ for file in files:
     ]
     new_cells = df[df["Cell"].isin(valid_new_cell_ids)]
     # Getting new cells which have been around for min 3 hours 9 time points
-    growth = new_cells.groupby("Cell",as_index=False).count()
-    growth_min_9_ids = growth[growth["Time"]>=10]["Cell"]
+    growth = new_cells.groupby("Cell", as_index=False).count()
+    growth_min_9_ids = growth[growth["Time"] >= 10]["Cell"]
     new_long_small_cells = new_cells[new_cells["Cell"].isin(growth_min_9_ids)]
 
-    new_long_small_cells["Diff"] = new_long_small_cells.groupby("Cell",as_index=False)["Area"].diff()
+    new_long_small_cells["Diff"] = new_long_small_cells.groupby("Cell", as_index=False)[
+        "Area"
+    ].diff()
     maxGrowth = new_long_small_cells.groupby("Cell")["Diff"].max()
 
     celldf = pd.concat(
@@ -62,7 +64,7 @@ for file in files:
                         "initally-present-mean": initial_cells["Area"].mean(),
                         "new-cells-mean": new_cells["Area"].mean(),
                         "maxGrowth": maxGrowth.mean(),
-                        "maxGrowthSize": len(maxGrowth)
+                        "maxGrowthSize": len(maxGrowth),
                     }
                 ]
             ),

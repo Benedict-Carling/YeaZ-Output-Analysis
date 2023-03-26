@@ -13,7 +13,13 @@ files = [
 ]
 
 celldf = pd.DataFrame(
-    columns=["site","field-of-view", "initally-present-mean", "new-cells-mean", "ratio"]
+    columns=[
+        "site",
+        "field-of-view",
+        "initally-present-mean",
+        "new-cells-mean",
+        "ratio",
+    ]
 )
 
 for file in files:
@@ -33,8 +39,8 @@ for file in files:
             pd.DataFrame(
                 [
                     {
-                        "site":file["site"],
-                        "field-of-view":file["name"],
+                        "site": file["site"],
+                        "field-of-view": file["name"],
                         "initally-present-mean": initial_cells["Area"].mean(),
                         "new-cells-mean": new_cells["Area"].mean(),
                         "ratio": new_cells["Area"].mean()

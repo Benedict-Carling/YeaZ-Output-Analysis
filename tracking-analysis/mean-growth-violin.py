@@ -65,8 +65,6 @@ for file in files:
     )
 
 
-
-
 print(celldf.iloc[0]["growth"])
 print(celldf.iloc[1]["growth"])
 
