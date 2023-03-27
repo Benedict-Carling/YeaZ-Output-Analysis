@@ -41,6 +41,9 @@ def getCleanCells():
         df["Site"] = file["site"]
         # I have realised that it works if i dont try to change it into a string, it needs to be the same type
         df = df.assign(Cell=lambda x: x.Name * 10_000 + x.Cell)
+
+        initial_present_cell_ids = df[df["Time"] == 0]["Cell"].unique()
+        df = df[~df["Cell"].isin(initial_present_cell_ids)]
         allcells = pd.concat([allcells, df])
 
     return allcells
@@ -69,7 +72,7 @@ vp = ax.violinplot(
     showmeans=True,
     showmedians=False,
     showextrema=True,
-    bw_method=0.2,
+    bw_method=0.3,
 )
 # # styling:
 # for body in vp["bodies"]:

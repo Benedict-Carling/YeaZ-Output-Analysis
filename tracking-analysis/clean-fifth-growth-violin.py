@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.stats import ttest_ind
 
 files = [
     {"site": "1&2", "name": 1, "path": "tracking-analysis/fov1-0-30 copy.csv"},
@@ -30,7 +29,7 @@ def getCleanCells():
         large_growth_ids = df[df["Growth"] >= 25]["Cell"].unique()
         df = df[~df["Cell"].isin(large_growth_ids)]
         # Remove new cells whose first appearance is greater the 40
-        initial_present_cell_ids = df[df["Time"] == 0]["Cell"].unique()
+        initial_present_cell_ids = df[df["Time"] == 0]["Cell"]
         new_cells = df[~df["Cell"].isin(initial_present_cell_ids)]
         new_cells_first = new_cells.groupby(
             "Cell",
@@ -42,9 +41,9 @@ def getCleanCells():
         df["Site"] = file["site"]
         # I have realised that it works if i dont try to change it into a string, it needs to be the same type
         df = df.assign(Cell=lambda x: x.Name * 10_000 + x.Cell)
-        # Comment to remove initally present cells
         initial_present_cell_ids = df[df["Time"] == 0]["Cell"].unique()
         df = df[~df["Cell"].isin(initial_present_cell_ids)]
+        allcells = pd.concat([allcells, df])
 
         allcells = pd.concat([allcells, df])
 
@@ -52,47 +51,51 @@ def getCleanCells():
 
 
 allcells = getCleanCells()
-print(allcells)
-
-# Max Trajectories Including all trajectories
-# Site - Mean
-# 1&2    10.136634
-# 3&4    10.292072
-# 5&6    10.086124
-# 7&8    10.987124
-# Site - Standard Error
-# 1&2    0.222511
-# 3&4    0.176679
-# 5&6    0.242886
-# 7&8    0.240313
-# max = allcells.groupby("Cell", as_index=False).max()
-# bysite = max.groupby("Site").mean()
-# print(bysite["Growth"])
-
-# Max Trajectories Additional min requirement of 4 hour existance
-# Site - mean
-# 1&2    13.402299
-# 3&4    13.097561
-# 5&6    12.434783
-# 7&8    14.184211
-# Site - standard error
-# 1&2    0.429922
-# 3&4    0.419347
-# 5&6    0.530196
-# 7&8    0.474142
 count = allcells.groupby("Cell", as_index=False).count()
 too_short_ids = count[count["Time"] <= 12]["Cell"].unique()
 allcells = allcells[~allcells["Cell"].isin(too_short_ids)]
-max = allcells.groupby("Cell", as_index=False).max()
-# bysite = max.groupby("Site").mean()
-# print(bysite["Growth"])
-# print(bysite.loc["1&2"]["Growth"])
-print(max[max["Site"] == "1&2"]["Growth"])
+max = allcells.groupby("Cell", as_index=False).nth(12)
 
-fds = ttest_ind(
-    max[max["Site"] == "1&2"]["Growth"],
-    max[max["Site"] == "3&4"]["Growth"],
-    equal_var=False,
-)
+# Site - mean
+# 1&2    2.383178
+# 3&4    1.408840
+# 5&6    1.688172
+# 7&8    2.981818
+# Site - standard error
+# 1&2    0.561135
+# 3&4    0.398884
+# 5&6    0.637752
+# 7&8    0.516126
 
-print(fds)
+# Comment out
+fds = max.groupby("Site").sem()
+print(fds["Growth"])
+
+# print(max[max["Site"] == "1&2"]["Growth"])
+
+# fig, ax = plt.subplots()
+
+# vp = ax.violinplot(
+#     [
+#         max[max["Site"] == "1&2"]["Growth"],
+#         max[max["Site"] == "3&4"]["Growth"],
+#         max[max["Site"] == "5&6"]["Growth"],
+#         max[max["Site"] == "7&8"]["Growth"],
+#     ],
+#     [1, 2, 3, 4],
+#     points=500,
+#     widths=0.7,
+#     showmeans=True,
+#     showmedians=False,
+#     showextrema=True,
+#     bw_method=0.2,
+# )
+# # # styling:
+# # for body in vp["bodies"]:
+# #     body.set_alpha(0.9)
+# # ax.set(ylim=(0, 14), yticks=np.arange(0, 15))
+# plt.ylabel("Maximum trajectory growth rate")
+# plt.xlabel("Location")
+# plt.title("Maximum growth rate per cell trajectory")
+
+# plt.show()
