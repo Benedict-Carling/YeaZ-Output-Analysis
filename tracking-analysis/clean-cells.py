@@ -43,8 +43,8 @@ def getCleanCells():
         # I have realised that it works if i dont try to change it into a string, it needs to be the same type
         df = df.assign(Cell=lambda x: x.Name * 10_000 + x.Cell)
         # Comment to remove initally present cells
-        initial_present_cell_ids = df[df["Time"] == 0]["Cell"].unique()
-        df = df[~df["Cell"].isin(initial_present_cell_ids)]
+        # initial_present_cell_ids = df[df["Time"] == 0]["Cell"].unique()
+        # df = df[~df["Cell"].isin(initial_present_cell_ids)]
 
         allcells = pd.concat([allcells, df])
 
@@ -52,7 +52,6 @@ def getCleanCells():
 
 
 allcells = getCleanCells()
-print(allcells)
 
 # Max Trajectories Including all trajectories
 # Site - Mean
@@ -80,19 +79,53 @@ print(allcells)
 # 3&4    0.419347
 # 5&6    0.530196
 # 7&8    0.474142
-count = allcells.groupby("Cell", as_index=False).count()
-too_short_ids = count[count["Time"] <= 12]["Cell"].unique()
-allcells = allcells[~allcells["Cell"].isin(too_short_ids)]
-max = allcells.groupby("Cell", as_index=False).max()
-# bysite = max.groupby("Site").mean()
-# print(bysite["Growth"])
-# print(bysite.loc["1&2"]["Growth"])
-print(max[max["Site"] == "1&2"]["Growth"])
+# count = allcells.groupby("Cell", as_index=False).count()
+# too_short_ids = count[count["Time"] <= 12]["Cell"].unique()
+# allcells = allcells[~allcells["Cell"].isin(too_short_ids)]
+# max = allcells.groupby("Cell", as_index=False).max()
+# # bysite = max.groupby("Site").mean()
+# # print(bysite["Growth"])
+# # print(bysite.loc["1&2"]["Growth"])
+# print(max[max["Site"] == "1&2"]["Growth"])
 
-fds = ttest_ind(
-    max[max["Site"] == "1&2"]["Growth"],
-    max[max["Site"] == "3&4"]["Growth"],
-    equal_var=False,
-)
+# fds = ttest_ind(
+#     max[max["Site"] == "1&2"]["Growth"],
+#     max[max["Site"] == "3&4"]["Growth"],
+#     equal_var=False,
+# )
 
-print(fds)
+# Total Growth Graph
+# data = pd.DataFrame()
+# cells12 = allcells[allcells["Site"] == "1&2"]
+# table = pd.pivot_table(cells12, values=["Area"], columns=["Time"], index="Cell")
+# table = table.apply(lambda x: sorted(x, key=pd.isnull), 1)
+# fdsa = np.array(table)
+# dataframe12 = pd.DataFrame(list(map(np.ravel, fdsa)))
+# cells34 = allcells[allcells["Site"] == "3&4"]
+# table = pd.pivot_table(cells34, values=["Area"], columns=["Time"], index="Cell")
+# table = table.apply(lambda x: sorted(x, key=pd.isnull), 1)
+# fdsa = np.array(table)
+# dataframe34 = pd.DataFrame(list(map(np.ravel, fdsa)))
+# cells56 = allcells[allcells["Site"] == "5&6"]
+# table = pd.pivot_table(cells56, values=["Area"], columns=["Time"], index="Cell")
+# table = table.apply(lambda x: sorted(x, key=pd.isnull), 1)
+# fdsa = np.array(table)
+# dataframe56 = pd.DataFrame(list(map(np.ravel, fdsa)))
+# cells78 = allcells[allcells["Site"] == "7&8"]
+# table = pd.pivot_table(cells78, values=["Area"], columns=["Time"], index="Cell")
+# print(table)
+# table = table.apply(lambda x: sorted(x, key=pd.isnull), 1)
+# fdsa = np.array(table)
+# print(fdsa)
+# dataframe78 = pd.DataFrame(list(map(np.ravel, fdsa)))
+# # print(pd.concat([dataframe78.mean(),dataframe78.count()]))
+# print(dataframe78.groupby(axis=0,level=-1).mean())
+# plt.plot(dataframe12.count(), linewidth="0.5", label ='1&2')
+# plt.plot(dataframe34.count(), linewidth="0.5", label ='3&4')
+# plt.plot(dataframe56.count(), linewidth="0.5", label ='5&6')
+# plt.plot(dataframe78.count(), linewidth="0.5", label ='7&8')
+# plt.ylabel("Mean Cell size")
+# plt.xlabel("Time (20 mins intervals) after first appearance")
+# plt.legend()
+# plt.title("Mean cell size at each age of cell")
+# plt.show()

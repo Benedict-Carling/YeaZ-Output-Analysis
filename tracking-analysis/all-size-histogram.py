@@ -26,16 +26,16 @@ for file in files:
 print(allcells)
 print(allcells[allcells["Area"] >= 154])
 
-# plt.hist(df["Area"], density=True, bins=400)  # density=False would make counts
-# plt.ylabel("Probability")
-# plt.xlabel("Data")
-# plt.title("Mean cell red value")
-# plt.show()
+plt.hist(df["Area"], density=True, bins=400)  # density=False would make counts
+plt.ylabel("Probability")
+plt.xlabel("Data")
+plt.title("Mean cell red value")
+plt.show()
 
-## Learning things over 154 are likely not cells there are 963 / 50683 over 154 ~2%.
+# Learning things over 154 are likely not cells there are 963 / 50683 over 154 ~2%.
 
-# plt.hist(df["Area"], density=True, bins=400)  # density=False would make counts
-# plt.ylabel("Probability")
-# plt.xlabel("Data")
-# plt.title("Mean cell red value")
-# plt.show()
+plt.hist(df["Area"], density=True, bins=400)  # density=False would make counts
+plt.ylabel("Probability")
+plt.xlabel("Data")
+plt.title("Mean cell red value")
+plt.show()
