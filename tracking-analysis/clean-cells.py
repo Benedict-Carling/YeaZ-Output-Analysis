@@ -15,7 +15,7 @@ files = [
 ]
 
 
-def getCleanCells():
+def getCleanCells(newOnly: bool = False):
     allcells = pd.DataFrame()
 
     for file in files:
@@ -42,16 +42,27 @@ def getCleanCells():
         df["Site"] = file["site"]
         # I have realised that it works if i dont try to change it into a string, it needs to be the same type
         df = df.assign(Cell=lambda x: x.Name * 10_000 + x.Cell)
+        # Remove cells if they have dissapered within 2 hours of appearing
+        disappearedWithTimeCount = df.groupby(['Cell'], as_index=False).agg({"Time":"count","Disappeared in video":"any"})
+        disappeared = disappearedWithTimeCount[disappearedWithTimeCount["Disappeared in video"] == True]
+        disappearIds = disappeared["Cell"]
+        df = df[~df["Cell"].isin(disappearIds)]
         # Comment to remove initally present cells
-        # initial_present_cell_ids = df[df["Time"] == 0]["Cell"].unique()
-        # df = df[~df["Cell"].isin(initial_present_cell_ids)]
+        if newOnly:
+            initial_present_cell_ids = df[df["Time"] == 0]["Cell"].unique()
+            df = df[~df["Cell"].isin(initial_present_cell_ids)]
 
         allcells = pd.concat([allcells, df])
 
     return allcells
 
 
-allcells = getCleanCells()
+allcells = getCleanCells(newOnly=True)
+print(allcells)
+
+# Divisions Estimate
+table = pd.pivot_table(allcells, values=["Area"], columns=["Time"], index="Cell")
+print(table["0"])
 
 # Max Trajectories Including all trajectories
 # Site - Mean
@@ -65,8 +76,8 @@ allcells = getCleanCells()
 # 5&6    0.242886
 # 7&8    0.240313
 # max = allcells.groupby("Cell", as_index=False).max()
-# bysite = max.groupby("Site").mean()
-# print(bysite["Growth"])
+# bysite = max.groupby("Site").agg({"Growth":["mean","sem","count"]})
+# print(bysite)
 
 # Max Trajectories Additional min requirement of 4 hour existance
 # Site - mean
@@ -83,9 +94,9 @@ allcells = getCleanCells()
 # too_short_ids = count[count["Time"] <= 12]["Cell"].unique()
 # allcells = allcells[~allcells["Cell"].isin(too_short_ids)]
 # max = allcells.groupby("Cell", as_index=False).max()
-# # bysite = max.groupby("Site").mean()
-# # print(bysite["Growth"])
-# # print(bysite.loc["1&2"]["Growth"])
+# bysite = max.groupby("Site").agg({"Growth":["mean","sem","count"]})
+# print(bysite)
+# print(bysite.loc["1&2"]["Growth"])
 # print(max[max["Site"] == "1&2"]["Growth"])
 
 # fds = ttest_ind(
