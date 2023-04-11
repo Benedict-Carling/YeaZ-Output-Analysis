@@ -22,9 +22,9 @@ plt.bar(
     tick_label=[str(numeric_string) for numeric_string in list(range(1, 97))],
     width=0.4,
 )  # density=False would make counts
-plt.ylabel("Probability")
+plt.ylabel("Localisation Score")
 plt.xlabel("Data")
 plt.xticks(rotation=90)
-plt.title("Number of Cells per well")
+plt.title("Average localisation per well")
 
 plt.show()
