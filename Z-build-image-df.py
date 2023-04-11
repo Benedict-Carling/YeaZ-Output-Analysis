@@ -11,7 +11,7 @@ MASKFILE = FOLDER + "newmaskfile.h5"
 ND2TOTALDFOUTOUT = FOLDER + "nd2_1.h5"
 MASKTOTALDFOUTOUT = FOLDER + "mask.pkl"
 TOTALDFOUTOUT = FOLDER + "all-images.pkl"
-CELLOUT = FOLDER + "cells.pkl"
+CELLOUT = FOLDER + "cells-v2.0.pkl"
 
 # Default order
 # –––––––––––––
@@ -230,7 +230,6 @@ def CreateCellDataFrama(df):
                 ignore_index=True,
             )
     return celldf
-
 
 
 nd2df = Nd2toDataFrame(ND2FILE)
