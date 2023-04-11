@@ -10,8 +10,8 @@ import h5py
 
 FOLDER = "data/feb22/"
 
-TOTALDFOUTOUT = FOLDER+"all-images.pkl"
-CELLDF = FOLDER+"all-cells.pkl"
+TOTALDFOUTOUT = FOLDER + "all-images.pkl"
+CELLDF = FOLDER + "all-cells.pkl"
 
 
 def getMaskBoxForInt(cellId: int, image) -> List[int]:
@@ -42,19 +42,28 @@ def CreateCellDataFrama(df):
             [x1, y1, x2, y2] = getMaskBoxForInt(cellId, processMask)
             cellMask = processMask[x1 : (x2 + 1), y1 : (y2 + 1)]
             BinaryCellMask = cleanMaskToBinaryMask(cellId, cellMask)
-            redChannel = df.loc[(df["channel"] == "Red") & (df["field-of-view"] == item["field-of-view"])].iloc[0]
+            redChannel = df.loc[
+                (df["channel"] == "Red")
+                & (df["field-of-view"] == item["field-of-view"])
+            ].iloc[0]
             redWindow = redChannel["image"][x1 : (x2 + 1), y1 : (y2 + 1)]
-            redCell = np.multiply(redWindow,BinaryCellMask)
-            blueChannel = df.loc[(df["channel"] == "Blue") & (df["field-of-view"] == item["field-of-view"])].iloc[0]
+            redCell = np.multiply(redWindow, BinaryCellMask)
+            blueChannel = df.loc[
+                (df["channel"] == "Blue")
+                & (df["field-of-view"] == item["field-of-view"])
+            ].iloc[0]
             blueWindow = blueChannel["image"][x1 : (x2 + 1), y1 : (y2 + 1)]
-            blueCell = np.multiply(blueWindow,BinaryCellMask)
-            greenChannel = df.loc[(df["channel"] == "Green") & (df["field-of-view"] == item["field-of-view"])].iloc[0]
+            blueCell = np.multiply(blueWindow, BinaryCellMask)
+            greenChannel = df.loc[
+                (df["channel"] == "Green")
+                & (df["field-of-view"] == item["field-of-view"])
+            ].iloc[0]
             greenWindow = greenChannel["image"][x1 : (x2 + 1), y1 : (y2 + 1)]
-            greenCell = np.multiply(greenWindow,BinaryCellMask)
+            greenCell = np.multiply(greenWindow, BinaryCellMask)
             # Correlation Statistics
             roundBlue = blueCell[blueCell != 0.0]
             roundGreen = greenCell[greenCell != 0.0]
-            roundBlueflat = roundBlue.flatten(),
+            roundBlueflat = (roundBlue.flatten(),)
             roundGreenflat = roundGreen.flatten()
             celldf = celldf.append(
                 {
@@ -66,17 +75,18 @@ def CreateCellDataFrama(df):
                     "meanRedValue": redCell.mean(),
                     "meanBlueValue": blueCell.mean(),
                     "meanGreenValue": greenCell.mean(),
-                    "greenBlueCorrelation": np.corrcoef(roundBlueflat,roundGreenflat)[0][1],
+                    "greenBlueCorrelation": np.corrcoef(roundBlueflat, roundGreenflat)[
+                        0
+                    ][1],
                     "roundBlue": roundBlue,
                     "roundBlueflat": roundBlueflat,
-
                 },
                 ignore_index=True,
             )
     return celldf
 
 
-totaldf= pd.read_pickle(TOTALDFOUTOUT)
+totaldf = pd.read_pickle(TOTALDFOUTOUT)
 celldf = CreateCellDataFrama(totaldf)
 celldf.to_pickle(CELLDF)
 print(celldf)

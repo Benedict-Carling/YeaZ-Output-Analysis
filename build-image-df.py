@@ -10,9 +10,9 @@ import h5py
 
 FOLDER = "data/feb22/"
 
-ND2FILE = FOLDER+"ChannelMono,Red,Green,Blue_Seq0000.nd2"
-MASKFILE = FOLDER+"newmaskfile.h5"
-TOTALDFOUTOUT = FOLDER+"all-images.pkl"
+ND2FILE = FOLDER + "ChannelMono,Red,Green,Blue_Seq0000.nd2"
+MASKFILE = FOLDER + "newmaskfile.h5"
+TOTALDFOUTOUT = FOLDER + "all-images.pkl"
 
 
 def readh5mask(path):
@@ -29,7 +29,6 @@ def readh5mask(path):
                     "channel": "Mask",
                     "image": df1,
                     "imageShape": df1.shape,
-
                 },
                 ignore_index=True,
             )
