@@ -34,11 +34,15 @@ def channelIndexToName(index: int):
 
 
 def Nd2toDataFrame(path):
+    print("Converting ND2 File to Dataframe")
     f = nd2.imread(path)
     df = pd.DataFrame(
         columns=["image-index", "field-of-view", "channel", "z-index", "image"]
     )
     for imageIndex, item in enumerate(f):
+        if imageIndex == 9:
+            break
+        print("Converting ND2 at index: ", imageIndex)
         for zIndex, z in enumerate(item):
             for channelIndex, channel in enumerate(z):
                 df = pd.concat(
@@ -61,14 +65,18 @@ def Nd2toDataFrame(path):
 
 
 def readh5mask(path):
+    print("Converting H5 Mask to Dataframe")
     # We use the 4th Channel for the masks
     df = pd.DataFrame(columns=["field-of-view", "channel", "image"])
     with h5py.File(path, "r") as f:
         for key in f.keys():
+            print("Converting H5 file at index: ", key)
             data = f[key]
             b_group_key = list(data.keys())[0]
             df1 = np.array(f[key][b_group_key][()])
             index = int(key.removeprefix("FOV"))
+            if index == 9:
+                break
             df = pd.concat(
                 [
                     df,
@@ -105,6 +113,7 @@ def cleanMaskToBinaryMask(int: int, image):
 
 
 def CreateCellDataFrama(df):
+    print("Merging Mask and Image dataframe to cell dataframe")
     celldf = pd.DataFrame(
         columns=[
             "field-of-view",
@@ -221,6 +230,7 @@ def CreateCellDataFrama(df):
                 ignore_index=True,
             )
     return celldf
+
 
 
 nd2df = Nd2toDataFrame(ND2FILE)
