@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import h5py
 
-FOLDER = "data/april6-hour0/"
+FOLDER = "data/april5/"
 
 ND2FILE = FOLDER + "ChannelMono,Red,Green,Blue_Seq0000.nd2"
 MASKFILE = FOLDER + "newmaskfile.h5"

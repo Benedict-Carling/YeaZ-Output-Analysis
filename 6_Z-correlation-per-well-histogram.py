@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 
 CELLFOLDER = "april5"
-CELLPATH = "data/" + CELLFOLDER + "/cells.pkl"
+CELLPATH = "data/" + CELLFOLDER + "/cells-v2.0.pkl"
 
 df = pd.read_pickle(CELLPATH)
 
@@ -13,12 +13,16 @@ df = df[df["meanRedValue"] < 290]
 df = df[df["meanRedValue"] > 50]
 
 # APRIL SIZE BETWEEN 60 and 600
+df["maxLocalisation"] = df[
+    ["greenBlueCorrelation1", "greenBlueCorrelation2", "greenBlueCorrelation0"]
+].max(axis=1)
 
+groupeddf = df.groupby("image-index").mean()
 
-plt.hist(df["greenBlueCorrelation0"], density=True, bins=250)  # density=False would make counts
+plt.hist(groupeddf["maxLocalisation"], density=True, bins=192)  # density=False would make counts
 plt.ylabel("Probability")
 plt.xlabel("Data")
 plt.title("Mean cell size")
 plt.show()
 
-print(df)
+print(groupeddf)
