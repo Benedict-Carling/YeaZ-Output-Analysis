@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import h5py
 
-FOLDER = "data/mar15/"
+FOLDER = "data/april6-hour0/"
 
 ND2FILE = FOLDER + "ChannelMono,Red,Green,Blue_Seq0000.nd2"
 MASKFILE = FOLDER + "newmaskfile.h5"
@@ -40,8 +40,6 @@ def Nd2toDataFrame(path):
         columns=["image-index", "field-of-view", "channel", "z-index", "image"]
     )
     for imageIndex, item in enumerate(f):
-        if imageIndex == 9:
-            break
         print("Converting ND2 at index: ", imageIndex)
         for zIndex, z in enumerate(item):
             for channelIndex, channel in enumerate(z):
@@ -75,8 +73,6 @@ def readh5mask(path):
             b_group_key = list(data.keys())[0]
             df1 = np.array(f[key][b_group_key][()])
             index = int(key.removeprefix("FOV"))
-            if index == 9:
-                break
             df = pd.concat(
                 [
                     df,
@@ -94,6 +90,7 @@ def readh5mask(path):
                 ],
                 ignore_index=True,
             )
+    f.close()
     return df
 
 
@@ -135,10 +132,13 @@ def CreateCellDataFrama(df):
     for _index, item in masks.iterrows():
         processMask = np.copy(item["image"])
         cellIds = np.delete(np.unique(processMask), 0)
+        print("Evaluting Cells statistics in mask: ", _index)
         for cellId in cellIds:
             [x1, y1, x2, y2] = getMaskBoxForInt(cellId, processMask)
             cellMask = processMask[x1 : (x2 + 1), y1 : (y2 + 1)]
             BinaryCellMask = cleanMaskToBinaryMask(cellId, cellMask)
+            if BinaryCellMask.sum() <= 5:
+                continue
             redChannel = df.loc[
                 (df["channel"] == "Red") & (df["image-index"] == item["image-index"])
             ].iloc[0]
@@ -206,35 +206,46 @@ def CreateCellDataFrama(df):
             roundGreenflat2 = roundGreen2.flatten()
 
             # Append
-            celldf = celldf.append(
-                {
-                    "image-index": item["image-index"],
-                    "field-of-view": item["field-of-view"],
-                    "cellId": cellId,
-                    # "mask-box": [x1, y1, x2, y2],
-                    # "binary-cell-mask": BinaryCellMask,
-                    "size": BinaryCellMask.sum(),
-                    "meanRedValue": redCell.mean(),
-                    "meanBlueValue": blueCell1.mean(),
-                    "meanGreenValue": greenCell2.mean(),
-                    "greenBlueCorrelation0": np.corrcoef(
-                        roundBlueflat0, roundGreenflat0
-                    )[0][1],
-                    "greenBlueCorrelation1": np.corrcoef(
-                        roundBlueflat1, roundGreenflat1
-                    )[0][1],
-                    "greenBlueCorrelation2": np.corrcoef(
-                        roundBlueflat2, roundGreenflat2
-                    )[0][1],
-                },
-                ignore_index=True,
+            celldf = pd.concat(
+                [
+                    celldf,
+                    pd.DataFrame(
+                        [
+                            {
+                                "image-index": item["image-index"],
+                                "field-of-view": item["field-of-view"],
+                                "cellId": cellId,
+                                # "mask-box": [x1, y1, x2, y2],
+                                # "binary-cell-mask": BinaryCellMask,
+                                "size": BinaryCellMask.sum(),
+                                "meanRedValue": redCell.mean(),
+                                "meanBlueValue": blueCell1.mean(),
+                                "meanGreenValue": greenCell2.mean(),
+                                "greenBlueCorrelation0": np.corrcoef(
+                                    roundBlueflat0, roundGreenflat0
+                                )[0][1],
+                                "greenBlueCorrelation1": np.corrcoef(
+                                    roundBlueflat1, roundGreenflat1
+                                )[0][1],
+                                "greenBlueCorrelation2": np.corrcoef(
+                                    roundBlueflat2, roundGreenflat2
+                                )[0][1],
+                            }
+                        ]
+                    ),
+                ]
             )
+
     return celldf
 
 
 nd2df = Nd2toDataFrame(ND2FILE)
+print(nd2df)
 h5df = readh5mask(MASKFILE)
+print(h5df)
 totaldf = pd.concat([nd2df, h5df])
+# Suppress/hide the warning
+np.seterr(invalid="ignore")
 celldf = CreateCellDataFrama(totaldf)
 print(totaldf)
 print(celldf)
