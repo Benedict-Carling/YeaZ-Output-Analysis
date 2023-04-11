@@ -36,33 +36,32 @@ def channelIndexToName(index: int):
 def Nd2toDataFrame(path):
     f = nd2.imread(path)
     df = pd.DataFrame(
-        columns=["image-index", "field-of-view", "channel", "z-index", "image"]
+        columns=["image-index", "channel", "z-index", "image"]
     )
     for imageIndex, item in enumerate(f):
-        # for zIndex, z in enumerate(item):
-        for channelIndex, channel in enumerate(item[1]):
-            df = pd.concat(
-                [
-                    df,
-                    pd.DataFrame(
-                        [
-                            {
-                                "image-index": imageIndex + 1,
-                                "field-of-view": ((imageIndex) // 9) + 1,
-                                "channel": channelIndexToName(channelIndex),
-                                "z-index": 1,
-                                "image": channel,
-                            }
-                        ]
-                    ),
-                ]
-            )
+        for zIndex, z in enumerate(item):
+            for channelIndex, channel in enumerate(item[1]):
+                df = pd.concat(
+                    [
+                        df,
+                        pd.DataFrame(
+                            [
+                                {
+                                    "image-index": imageIndex + 1,
+                                    "channel": channelIndexToName(channelIndex),
+                                    "z-index": zIndex,
+                                    "image": channel,
+                                }
+                            ]
+                        ),
+                    ]
+                )
     return df
 
 
 def readh5mask(path):
     # We use the 4th Channel for the masks
-    df = pd.DataFrame(columns=["field-of-view", "channel", "image"])
+    df = pd.DataFrame(columns=["channel", "image"])
     with h5py.File(path, "r") as f:
         for key in f.keys():
             data = f[key]
@@ -76,7 +75,6 @@ def readh5mask(path):
                         [
                             {
                                 "image-index": int(index + 1),
-                                "field-of-view": int((index) // 9) + 1,
                                 "channel": "Mask",
                                 "z-index": 3,
                                 "image": df1,
@@ -112,7 +110,6 @@ def CreateCellDataFrama(df):
     celldf = pd.DataFrame(
         columns=[
             "image-index",
-            "field-of-view",
             "cellId",
             "size",
             "meanRedValue",
@@ -135,21 +132,67 @@ def CreateCellDataFrama(df):
             ].iloc[0]
             redWindow = redChannel["image"][x1 : (x2 + 1), y1 : (y2 + 1)]
             redCell = np.multiply(redWindow, BinaryCellMask)
-            blueChannel = df.loc[
+
+            # Blue 0
+            blueChannel0 = df.loc[
                 (df["channel"] == "Blue") & (df["image-index"] == item["image-index"])
             ].iloc[0]
-            blueWindow = blueChannel["image"][x1 : (x2 + 1), y1 : (y2 + 1)]
-            blueCell = np.multiply(blueWindow, BinaryCellMask)
-            greenChannel = df.loc[
+            blueWindow0 = blueChannel0["image"][x1 : (x2 + 1), y1 : (y2 + 1)]
+            blueCell0 = np.multiply(blueWindow0, BinaryCellMask)
+
+            # Blue 1
+            blueChannel1 = df.loc[
+                (df["channel"] == "Blue") & (df["image-index"] == item["image-index"])
+            ].iloc[1]
+            blueWindow1 = blueChannel1["image"][x1 : (x2 + 1), y1 : (y2 + 1)]
+            blueCell1 = np.multiply(blueWindow1, BinaryCellMask)
+
+            # Blue 2
+            blueChannel2 = df.loc[
+                (df["channel"] == "Blue") & (df["image-index"] == item["image-index"])
+            ].iloc[2]
+            blueWindow2 = blueChannel2["image"][x1 : (x2 + 1), y1 : (y2 + 1)]
+            blueCell2 = np.multiply(blueWindow2, BinaryCellMask)
+
+            # Green 0
+            greenChannel0 = df.loc[
                 (df["channel"] == "Green") & (df["image-index"] == item["image-index"])
             ].iloc[0]
-            greenWindow = greenChannel["image"][x1 : (x2 + 1), y1 : (y2 + 1)]
-            greenCell = np.multiply(greenWindow, BinaryCellMask)
-            # Correlation Statistics
-            roundBlue = blueCell[blueCell != 0.0]
-            roundGreen = greenCell[greenCell != 0.0]
-            roundBlueflat = (roundBlue.flatten(),)
-            roundGreenflat = roundGreen.flatten()
+            greenWindow0 = greenChannel0["image"][x1 : (x2 + 1), y1 : (y2 + 1)]
+            greenCell0 = np.multiply(greenWindow0, BinaryCellMask)
+
+            # Green 1
+            greenChannel1 = df.loc[
+                (df["channel"] == "Green") & (df["image-index"] == item["image-index"])
+            ].iloc[1]
+            greenWindow1 = greenChannel1["image"][x1 : (x2 + 1), y1 : (y2 + 1)]
+            greenCell1 = np.multiply(greenWindow1, BinaryCellMask)
+
+            # Green 2
+            greenChannel2 = df.loc[
+                (df["channel"] == "Green") & (df["image-index"] == item["image-index"])
+            ].iloc[2]
+            greenWindow2 = greenChannel2["image"][x1 : (x2 + 1), y1 : (y2 + 1)]
+            greenCell2 = np.multiply(greenWindow2, BinaryCellMask)
+
+            # Correlation 0
+            roundBlue0 = blueCell0[blueCell0 != 0.0]
+            roundGreen0 = greenCell0[greenCell0 != 0.0]
+            roundBlueflat0 = (roundBlue0.flatten(),)
+            roundGreenflat0 = roundGreen0.flatten()
+
+            # Correlation 1
+            roundBlue1 = blueCell1[blueCell1 != 0.0]
+            roundGreen1 = greenCell1[greenCell1 != 0.0]
+            roundBlueflat1 = (roundBlue1.flatten(),)
+            roundGreenflat1 = roundGreen1.flatten()
+
+            # Correlation 2
+            roundBlue2 = blueCell2[blueCell2 != 0.0]
+            roundGreen2 = greenCell2[greenCell2 != 0.0]
+            roundBlueflat2 = (roundBlue2.flatten(),)
+            roundGreenflat2 = roundGreen2.flatten()
+
             celldf = pd.concat(
                 [
                     celldf,
@@ -157,14 +200,19 @@ def CreateCellDataFrama(df):
                         [
                             {
                                 "image-index": item["image-index"],
-                                "field-of-view": item["field-of-view"],
                                 "cellId": cellId,
                                 "size": BinaryCellMask.sum(),
                                 "meanRedValue": redCell.mean(),
-                                "meanBlueValue": blueCell.mean(),
-                                "meanGreenValue": greenCell.mean(),
-                                "greenBlueCorrelation": np.corrcoef(
-                                    roundBlueflat, roundGreenflat
+                                "meanBlueValue": blueCell0.mean(),
+                                "meanGreenValue": greenCell0.mean(),
+                                "greenBlueCorrelation0": np.corrcoef(
+                                    roundBlueflat0, roundGreenflat0
+                                )[0][1],
+                                "greenBlueCorrelation1": np.corrcoef(
+                                    roundBlueflat1, roundGreenflat1
+                                )[0][1],
+                                "greenBlueCorrelation2": np.corrcoef(
+                                    roundBlueflat2, roundGreenflat2
                                 )[0][1],
                             }
                         ]

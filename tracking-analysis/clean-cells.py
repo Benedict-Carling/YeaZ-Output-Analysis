@@ -43,8 +43,12 @@ def getCleanCells(newOnly: bool = False):
         # I have realised that it works if i dont try to change it into a string, it needs to be the same type
         df = df.assign(Cell=lambda x: x.Name * 10_000 + x.Cell)
         # Remove cells if they have dissapered within 2 hours of appearing
-        disappearedWithTimeCount = df.groupby(['Cell'], as_index=False).agg({"Time":"count","Disappeared in video":"any"})
-        disappeared = disappearedWithTimeCount[disappearedWithTimeCount["Disappeared in video"] == True]
+        disappearedWithTimeCount = df.groupby(["Cell"], as_index=False).agg(
+            {"Time": "count", "Disappeared in video": "any"}
+        )
+        disappeared = disappearedWithTimeCount[
+            disappearedWithTimeCount["Disappeared in video"] == True
+        ]
         disappearIds = disappeared["Cell"]
         df = df[~df["Cell"].isin(disappearIds)]
         # Comment to remove initally present cells

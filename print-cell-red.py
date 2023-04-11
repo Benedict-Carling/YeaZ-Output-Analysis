@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 
 CELLFOLDER = "april5"
-CELLPATH = "data/"+ CELLFOLDER + "/cells.pkl"
+CELLPATH = "data/" + CELLFOLDER + "/cells.pkl"
 
 df = pd.read_pickle(CELLPATH)
 
