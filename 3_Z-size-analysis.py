@@ -3,11 +3,11 @@ import matplotlib.pyplot as plt
 
 
 CELLFOLDER = "april5"
-CELLPATH = "data/" + CELLFOLDER + "/cells-v2.0.pkl"
+CELLPATH = "data/" + CELLFOLDER + "/cells.pkl"
 
 df = pd.read_pickle(CELLPATH)
 
-df = df[df["size"] > 60]
+# df = df[df["size"] > 25]
 df = df[df["size"] < 600]
 
 # APRIL SIZE BETWEEN 60 and 600

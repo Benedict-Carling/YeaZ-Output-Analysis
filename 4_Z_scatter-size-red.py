@@ -1,18 +1,17 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-CELLFOLDER = "april5"
-CELLPATH = "data/" + CELLFOLDER + "/cells-v2.0.pkl"
+from Analysis_Directory import CELLPATH
 
 df = pd.read_pickle(CELLPATH)
 
-df = df[df["size"] > 60]
-df = df[df["size"] < 600]
+# df = df[df["size"] > 60]
+# df = df[df["size"] < 800]
 
-df = df[df["meanRedValue"] > 70]
-df = df[df["meanRedValue"] < 290]
+# df = df[df["meanRedValue"] > 110]
+# df = df[df["meanRedValue"] < 500]
 
-#April5
+# April5
 # Low 100-310 size
 # High 350-560 size
 

@@ -26,11 +26,12 @@ highPopulation = highPopulation[highPopulation["size"] < 560]
 lowPopulationGrouped = lowPopulation.groupby("image-index", as_index=False).mean()
 highPopulationGrouped = highPopulation.groupby("image-index", as_index=False).mean()
 
-lowPopulationGrouped = lowPopulationGrouped[lowPopulationGrouped["maxLocalisation"] > 0.16]
-lowPopulationGrouped = lowPopulationGrouped[lowPopulationGrouped["maxLocalisation"] < 0.175]
-print(lowPopulationGrouped)
+# lowPopulationGrouped = lowPopulationGrouped[lowPopulationGrouped["maxLocalisation"] > 0.16]
+# lowPopulationGrouped = lowPopulationGrouped[lowPopulationGrouped["maxLocalisation"] < 0.175]
+# print(lowPopulationGrouped)
 
-highPopulationGrouped = highPopulationGrouped[highPopulationGrouped["maxLocalisation"] > 0.285]
-highPopulationGrouped = highPopulationGrouped[highPopulationGrouped["maxLocalisation"] < 0.295]
-print(highPopulationGrouped)
+# highPopulationGrouped = highPopulationGrouped[highPopulationGrouped["maxLocalisation"] > 0.285]
+# highPopulationGrouped = highPopulationGrouped[highPopulationGrouped["maxLocalisation"] < 0.295]
+# print(highPopulationGrouped)
 
+print(highPopulationGrouped.sort_values("maxLocalisation"))

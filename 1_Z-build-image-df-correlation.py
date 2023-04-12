@@ -35,9 +35,7 @@ def channelIndexToName(index: int):
 
 def Nd2toDataFrame(path):
     f = nd2.imread(path)
-    df = pd.DataFrame(
-        columns=["image-index", "channel", "z-index", "image"]
-    )
+    df = pd.DataFrame(columns=["image-index", "channel", "z-index", "image"])
     for imageIndex, item in enumerate(f):
         for zIndex, z in enumerate(item):
             for channelIndex, channel in enumerate(item[1]):

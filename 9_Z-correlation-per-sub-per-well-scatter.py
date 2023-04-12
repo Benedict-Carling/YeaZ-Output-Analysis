@@ -1,9 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from adjustText import adjust_text
 
-CELLFOLDER = "april5"
-CELLPATH = "data/" + CELLFOLDER + "/cells-v2.0.pkl"
+
+from Analysis_Directory import CELLPATH
 
 df = pd.read_pickle(CELLPATH)
 
@@ -33,8 +34,8 @@ lowPopulationGrouped = lowPopulationGrouped[
 ]
 
 penguin_means = {
-    "Low Subpopulation": lowPopulationGrouped["maxLocalisation"],
-    "High Subpopulation": highPopulationGrouped["maxLocalisation"],
+    "Low Subpopulation": lowPopulationGrouped["greenBlueCorrelation2"],
+    "High Subpopulation": highPopulationGrouped["greenBlueCorrelation2"],
 }
 
 species = [str(item) for item in highPopulationGrouped["image-index"].unique()]
@@ -44,10 +45,30 @@ width = 0.25  # the width of the bars
 multiplier = 0
 
 plt.scatter(
-    penguin_means["High Subpopulation"], penguin_means["Low Subpopulation"], alpha=0.3
+    penguin_means["Low Subpopulation"], penguin_means["High Subpopulation"], alpha=0.3
 )  # density=False would make counts
+
+# for i, txt in enumerate(species):
+#     plt.annotate(txt,(penguin_means["Low Subpopulation"][i],penguin_means["High Subpopulation"][i]),fontsize=6)
+
+plt.gcf().set_size_inches(16, 9)
 plt.ylabel("Low subpopulation localisation score")
 plt.xlabel("High subpopulation localisation score")
-plt.title("Comparision of localisation per population")
-plt.show()
+plt.title(
+    "Comparision of localisation per population - April 6 - 6 hour - greenBlueCorrelation2"
+)
+plt.axis([0.25, 0.55, 0.325, 0.55])
 
+texts = [
+    plt.text(
+        penguin_means["Low Subpopulation"][i],
+        penguin_means["High Subpopulation"][i],
+        txt,
+        fontsize="xx-small",
+        
+    )
+    for i, txt in enumerate(species)
+]
+adjust_text(texts,arrowprops=dict(arrowstyle="-", color='k', lw=0.5))
+
+plt.savefig("April6-hour6-gb2.png", dpi=200)

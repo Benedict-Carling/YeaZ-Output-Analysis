@@ -2,8 +2,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-CELLFOLDER = "april5"
-CELLPATH = "data/" + CELLFOLDER + "/cells-v2.0.pkl"
+CELLFOLDER = "april6-4"
+CELLPATH = "data/" + CELLFOLDER + "/cells-ssim-win7.pkl"
 
 df = pd.read_pickle(CELLPATH)
 
@@ -19,7 +19,9 @@ df["maxLocalisation"] = df[
 
 groupeddf = df.groupby("image-index").mean()
 
-plt.hist(groupeddf["maxLocalisation"], density=True, bins=192)  # density=False would make counts
+plt.hist(
+    groupeddf["maxLocalisation"], density=True, bins=192
+)  # density=False would make counts
 plt.ylabel("Probability")
 plt.xlabel("Data")
 plt.title("Mean cell size")
