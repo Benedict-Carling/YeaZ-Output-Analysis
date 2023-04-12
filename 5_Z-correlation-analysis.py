@@ -1,9 +1,9 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from Analysis_Directory import CELLPATH
 
-CELLFOLDER = "april6-4"
-CELLPATH = "data/" + CELLFOLDER + "/cells-ssim-win7.pkl"
+
 
 df = pd.read_pickle(CELLPATH)
 

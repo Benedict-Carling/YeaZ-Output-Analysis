@@ -5,7 +5,7 @@ import pandas as pd
 import h5py
 from skimage.metrics import structural_similarity as ssim
 
-FOLDER = "data/april5/"
+FOLDER = "data/mar15/"
 
 ND2FILE = FOLDER + "ChannelMono,Red,Green,Blue_Seq0000.nd2"
 MASKFILE = FOLDER + "newmaskfile.h5"

@@ -5,11 +5,11 @@ from Analysis_Directory import CELLPATH
 
 df = pd.read_pickle(CELLPATH)
 
-# df = df[df["size"] > 60]
-# df = df[df["size"] < 800]
+df = df[df["size"] > 60]
+df = df[df["size"] < 800]
 
-# df = df[df["meanRedValue"] > 110]
-# df = df[df["meanRedValue"] < 500]
+df = df[df["meanRedValue"] > 110]
+df = df[df["meanRedValue"] < 500]
 
 # April5
 # Low 100-310 size

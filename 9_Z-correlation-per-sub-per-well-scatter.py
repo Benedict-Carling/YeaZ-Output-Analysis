@@ -27,11 +27,11 @@ highPopulation = highPopulation[highPopulation["size"] < 560]
 lowPopulationGrouped = lowPopulation.groupby("image-index", as_index=False).mean()
 highPopulationGrouped = highPopulation.groupby("image-index", as_index=False).mean()
 
-lowPopulationGrouped = lowPopulationGrouped[
-    lowPopulationGrouped["image-index"].isin(
-        highPopulationGrouped["image-index"].unique()
-    )
-]
+# lowPopulationGrouped = lowPopulationGrouped[
+#     lowPopulationGrouped["image-index"].isin(
+#         highPopulationGrouped["image-index"].unique()
+#     )
+# ]
 
 penguin_means = {
     "Low Subpopulation": lowPopulationGrouped["greenBlueCorrelation2"],
@@ -57,7 +57,7 @@ plt.xlabel("High subpopulation localisation score")
 plt.title(
     "Comparision of localisation per population - April 6 - 6 hour - greenBlueCorrelation2"
 )
-plt.axis([0.25, 0.55, 0.325, 0.55])
+plt.axis([0.2, 0.37, 0.2, 0.37])
 
 texts = [
     plt.text(
@@ -65,10 +65,9 @@ texts = [
         penguin_means["High Subpopulation"][i],
         txt,
         fontsize="xx-small",
-        
     )
     for i, txt in enumerate(species)
 ]
-adjust_text(texts,arrowprops=dict(arrowstyle="-", color='k', lw=0.5))
+adjust_text(texts, arrowprops=dict(arrowstyle="-", color="k", lw=0.5))
 
-plt.savefig("April6-hour6-gb2.png", dpi=200)
+plt.savefig("April5-hour4-2.png", dpi=200)
