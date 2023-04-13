@@ -1,4 +1,6 @@
 data/
 data/*
 data/**
-analysis-directory.py
+analysis_directory.py
+.DS_Store
+*.pyc

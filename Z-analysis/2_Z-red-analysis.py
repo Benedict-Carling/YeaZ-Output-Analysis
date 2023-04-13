@@ -2,20 +2,23 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-CELLFOLDER = "april5"
-CELLPATH = "data/" + CELLFOLDER + "/cells-v2.0.pkl"
+from analysis_directory import CELLPATH
+from analysis_directory import CELLDIRECTORY
+from analysis_directory import FILENAME
 
 df = pd.read_pickle(CELLPATH)
 
-df = df[df["meanRedValue"] < 290]
-df = df[df["meanRedValue"] > 70]
+# df = df[df["size"] > 25]
+df = df[df["meanRedValue"] < 400]
 
-# APRIL meanRedValue BETWEEN 70 and 290
+# APRIL SIZE BETWEEN 60 and 600
 
-plt.hist(df["meanRedValue"], density=True, bins=250)  # density=False would make counts
+
+plt.hist(df["meanRedValue"], density=True, bins=300)  # density=False would make counts
+
+plt.gcf().set_size_inches(16, 9)
 plt.ylabel("Probability")
 plt.xlabel("Data")
-plt.title("Mean cell red value - April 5th NLIM Proline 4hours")
-plt.show()
+plt.title("{} Mean Cell Red Flourescence - No cells {}".format(FILENAME,len(df)))
+plt.savefig("{}/{} Cell Red Histogram.png".format(CELLDIRECTORY,FILENAME),dpi=200)
 
-print(df)
