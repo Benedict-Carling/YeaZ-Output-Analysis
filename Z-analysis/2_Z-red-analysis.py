@@ -19,6 +19,5 @@ plt.hist(df["meanRedValue"], density=True, bins=300)  # density=False would make
 plt.gcf().set_size_inches(16, 9)
 plt.ylabel("Probability")
 plt.xlabel("Data")
-plt.title("{} Mean Cell Red Flourescence - No cells {}".format(FILENAME,len(df)))
-plt.savefig("{}/{} Cell Red Histogram.png".format(CELLDIRECTORY,FILENAME),dpi=200)
-
+plt.title("{} Mean Cell Red Flourescence - No cells {}".format(FILENAME, len(df)))
+plt.savefig("{}/{} Cell Red Histogram.png".format(CELLDIRECTORY, FILENAME), dpi=200)

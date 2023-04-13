@@ -35,19 +35,37 @@ lowPopulationGrouped = lowPopulationGrouped[
 ]
 
 
-cor01 = np.corrcoef(highPopulationGrouped["greenBlueCorrelation0"], highPopulationGrouped["greenBlueCorrelation1"])[0][1]
-cor02 = np.corrcoef(highPopulationGrouped["greenBlueCorrelation0"], highPopulationGrouped["greenBlueCorrelation2"])[0][1]
-cor12 = np.corrcoef(highPopulationGrouped["greenBlueCorrelation1"], highPopulationGrouped["greenBlueCorrelation2"])[0][1]
-cor0max = np.corrcoef(highPopulationGrouped["greenBlueCorrelation0"], highPopulationGrouped["maxLocalisation"])[0][1]
-cor1max = np.corrcoef(highPopulationGrouped["greenBlueCorrelation1"], highPopulationGrouped["maxLocalisation"])[0][1]
-cor2max = np.corrcoef(highPopulationGrouped["greenBlueCorrelation2"], highPopulationGrouped["maxLocalisation"])[0][1]
+cor01 = np.corrcoef(
+    highPopulationGrouped["greenBlueCorrelation0"],
+    highPopulationGrouped["greenBlueCorrelation1"],
+)[0][1]
+cor02 = np.corrcoef(
+    highPopulationGrouped["greenBlueCorrelation0"],
+    highPopulationGrouped["greenBlueCorrelation2"],
+)[0][1]
+cor12 = np.corrcoef(
+    highPopulationGrouped["greenBlueCorrelation1"],
+    highPopulationGrouped["greenBlueCorrelation2"],
+)[0][1]
+cor0max = np.corrcoef(
+    highPopulationGrouped["greenBlueCorrelation0"],
+    highPopulationGrouped["maxLocalisation"],
+)[0][1]
+cor1max = np.corrcoef(
+    highPopulationGrouped["greenBlueCorrelation1"],
+    highPopulationGrouped["maxLocalisation"],
+)[0][1]
+cor2max = np.corrcoef(
+    highPopulationGrouped["greenBlueCorrelation2"],
+    highPopulationGrouped["maxLocalisation"],
+)[0][1]
 
-print("01",cor01)
-print("02",cor02)
-print("12",cor12)
-print("0max",cor0max)
-print("1max",cor1max)
-print("2max",cor2max)
+print("01", cor01)
+print("02", cor02)
+print("12", cor12)
+print("0max", cor0max)
+print("1max", cor1max)
+print("2max", cor2max)
 
 cor01 = np.corrcoef(df["greenBlueCorrelation0"], df["greenBlueCorrelation1"])[0][1]
 cor02 = np.corrcoef(df["greenBlueCorrelation0"], df["greenBlueCorrelation2"])[0][1]
@@ -56,12 +74,12 @@ cor0max = np.corrcoef(df["greenBlueCorrelation0"], df["maxLocalisation"])[0][1]
 cor1max = np.corrcoef(df["greenBlueCorrelation1"], df["maxLocalisation"])[0][1]
 cor2max = np.corrcoef(df["greenBlueCorrelation2"], df["maxLocalisation"])[0][1]
 
-print("01",cor01)
-print("02",cor02)
-print("12",cor12)
-print("0max",cor0max)
-print("1max",cor1max)
-print("2max",cor2max)
+print("01", cor01)
+print("02", cor02)
+print("12", cor12)
+print("0max", cor0max)
+print("1max", cor1max)
+print("2max", cor2max)
 
 # April 6
 
@@ -84,7 +102,7 @@ print("2max",cor2max)
 # 2max 0.8813224362264248
 
 # High subpopulation
-#       0                       1                   2       
+#       0                       1                   2
 #   0
 #   1   0.9816416016371652
 #   2   0.9503032287999555      0.98566524962276

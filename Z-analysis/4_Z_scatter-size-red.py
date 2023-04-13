@@ -27,5 +27,5 @@ plt.scatter(
 plt.gcf().set_size_inches(16, 9)
 plt.ylabel("Mean Red")
 plt.xlabel("Size")
-plt.title("{} Cell Scatter Graph - No cells {}".format(FILENAME,len(df)))
-plt.savefig("{}/{} Cell Scatter Graph.png".format(CELLDIRECTORY,FILENAME),dpi=200)
+plt.title("{} Cell Scatter Graph - No cells {}".format(FILENAME, len(df)))
+plt.savefig("{}/{} Cell Scatter Graph.png".format(CELLDIRECTORY, FILENAME), dpi=200)

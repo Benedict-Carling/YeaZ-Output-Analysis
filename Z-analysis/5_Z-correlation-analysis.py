@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 from Analysis_Directory import CELLPATH
 
 
-
 df = pd.read_pickle(CELLPATH)
 
 df = df[df["size"] > 60]

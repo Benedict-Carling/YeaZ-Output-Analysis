@@ -18,6 +18,5 @@ plt.hist(df["size"], density=True, bins=300)  # density=False would make counts
 plt.gcf().set_size_inches(16, 9)
 plt.ylabel("Probability")
 plt.xlabel("Data")
-plt.title("{} Cell Size Histogram - No cells {}".format(FILENAME,len(df)))
-plt.savefig("{}/{} Cell Size Histogram.png".format(CELLDIRECTORY,FILENAME),dpi=200)
-
+plt.title("{} Cell Size Histogram - No cells {}".format(FILENAME, len(df)))
+plt.savefig("{}/{} Cell Size Histogram.png".format(CELLDIRECTORY, FILENAME), dpi=200)
