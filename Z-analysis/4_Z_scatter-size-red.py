@@ -24,8 +24,13 @@ print(df)
 plt.scatter(
     df["size"], df["meanRedValue"], alpha=0.003
 )  # density=False would make counts
+plt.axis([60, 700, 110, 350])
 plt.gcf().set_size_inches(16, 9)
 plt.ylabel("Mean Red")
 plt.xlabel("Size")
 plt.title("{} Cell Scatter Graph - No cells {}".format(FILENAME, len(df)))
-plt.savefig("{}/{} Cell Scatter Graph.png".format(CELLDIRECTORY, FILENAME), dpi=200)
+plt.savefig(
+    "{}/{} Cell Scatter Graph.png".format(CELLDIRECTORY, FILENAME),
+    bbox_inches="tight",
+    dpi=200,
+)

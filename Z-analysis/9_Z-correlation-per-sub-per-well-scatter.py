@@ -1,73 +1,68 @@
+from low_high_selection import addPopulationCharacterisation
+from analysis_directory import CELLPATH
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from adjustText import adjust_text
 
-
-from Analysis_Directory import CELLPATH
+from analysis_directory import CELLPATH
+from analysis_directory import CELLDIRECTORY
+from analysis_directory import FILENAME
 
 df = pd.read_pickle(CELLPATH)
 
-df = df[df["size"] > 60]
-df = df[df["size"] < 600]
-df = df[df["meanRedValue"] < 290]
-df = df[df["meanRedValue"] > 50]
+df, _centroids = addPopulationCharacterisation(df)
 
 df["maxLocalisation"] = df[
     ["greenBlueCorrelation1", "greenBlueCorrelation2", "greenBlueCorrelation0"]
 ].max(axis=1)
 
-lowPopulation = df[df["size"] > 100]
-lowPopulation = lowPopulation[lowPopulation["size"] < 310]
+lowPopulation = df[df["is_low_population"]]
+highPopulation = df[df["is_high_population"]]
 
-highPopulation = df[df["size"] > 350]
-highPopulation = highPopulation[highPopulation["size"] < 560]
+group_low = lowPopulation.groupby(["image-index"], as_index=False).agg(
+    {"maxLocalisation": "mean", "cellId": "count"}
+)
+group_high = highPopulation.groupby(["image-index"], as_index=False).agg(
+    {"maxLocalisation": "mean", "cellId": "count"}
+)
 
+dataframe = pd.merge(
+    group_low, group_high, on="image-index", how="inner", suffixes=["_low", "_high"]
+)
+dataframe = dataframe[dataframe["cellId_low"] >= 10]
+dataframe = dataframe[dataframe["cellId_high"] >= 10]
 
-lowPopulationGrouped = lowPopulation.groupby("image-index", as_index=False).mean()
-highPopulationGrouped = highPopulation.groupby("image-index", as_index=False).mean()
+print(dataframe)
 
-# lowPopulationGrouped = lowPopulationGrouped[
-#     lowPopulationGrouped["image-index"].isin(
-#         highPopulationGrouped["image-index"].unique()
-#     )
-# ]
+species = [str(item) for item in dataframe["image-index"].unique()]
 
-penguin_means = {
-    "Low Subpopulation": lowPopulationGrouped["greenBlueCorrelation2"],
-    "High Subpopulation": highPopulationGrouped["greenBlueCorrelation2"],
-}
+print(species)
 
-species = [str(item) for item in highPopulationGrouped["image-index"].unique()]
-
-x = np.arange(len(species))  # the label locations
-width = 0.25  # the width of the bars
-multiplier = 0
-
-plt.scatter(
-    penguin_means["Low Subpopulation"], penguin_means["High Subpopulation"], alpha=0.3
-)  # density=False would make counts
-
-# for i, txt in enumerate(species):
-#     plt.annotate(txt,(penguin_means["Low Subpopulation"][i],penguin_means["High Subpopulation"][i]),fontsize=6)
+x = dataframe["maxLocalisation_low"]
+y = dataframe["maxLocalisation_high"]
 
 plt.gcf().set_size_inches(16, 9)
+plt.scatter(x, y,color="steelblue", alpha=0.3)  # density=False would make counts
 plt.ylabel("Low subpopulation localisation score")
 plt.xlabel("High subpopulation localisation score")
-plt.title(
-    "Comparision of localisation per population - April 6 - 6 hour - greenBlueCorrelation2"
+plt.title("{} Cell Localisation Scores Graph: Max Localisation".format(FILENAME))
+
+plt.axis([0.05, 0.27, 0.1, 0.42])
+
+
+texts = [plt.text(y, z, x) for x, y, z in zip(dataframe["image-index"], x, y)]
+adjust_text(texts, arrowprops=dict(arrowstyle="-", color="k", lw=0.1))
+
+a, b = np.polyfit(x, y, 1)
+plt.plot(x, a*x+b, color='grey', linestyle='solid', linewidth=1)
+
+plt.savefig(
+    "{}/{} Cell Localisation Scores Max Localisation.png".format(
+        CELLDIRECTORY, FILENAME
+    ),
+    bbox_inches="tight",
+    dpi=200,
 )
-plt.axis([0.2, 0.37, 0.2, 0.37])
 
-texts = [
-    plt.text(
-        penguin_means["Low Subpopulation"][i],
-        penguin_means["High Subpopulation"][i],
-        txt,
-        fontsize="xx-small",
-    )
-    for i, txt in enumerate(species)
-]
-adjust_text(texts, arrowprops=dict(arrowstyle="-", color="k", lw=0.5))
-
-plt.savefig("April5-hour4-2.png", dpi=200)
+# plt.savefig("April5-hour4-2.png", dpi=200)
