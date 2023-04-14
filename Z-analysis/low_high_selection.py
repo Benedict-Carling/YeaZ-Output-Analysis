@@ -38,6 +38,7 @@ def addPopulationCharacterisation(df):
     # Used K - means clustering to kind the centriods 2 sub population
     # [[196.95771045 189.68542636]
     #  [479.8426798  240.08666979]]
+    centroids = [[196.95771045, 185.42314231],[472.19301061, 235.09982935]]
 
     g_ell_center = centroids[0]
     g_ell_width = 100
@@ -109,7 +110,7 @@ print(df[df["is_high_population"]])
 
 def graph():
     plt.scatter(df2["size"], df2["meanRedValue"], c=cols, s=50, alpha=0.003)
-    plt.scatter(centroids[:, 0], centroids[:, 1], c="green", s=50)
+    # plt.scatter(centroids[:, 0], centroids[:, 1], c="green", s=50)
     plt.gcf().set_size_inches(16, 9)
     plt.axis([60, 700, 110, 350])
     plt.ylabel("Mean Red")
@@ -121,6 +122,7 @@ def graph():
         dpi=200,
     )
 
+# graph()
 
 # c=kmeans.labels_.astype(float)
 # c=cols

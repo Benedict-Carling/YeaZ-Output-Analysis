@@ -48,7 +48,7 @@ plt.ylabel("Low subpopulation localisation score")
 plt.xlabel("High subpopulation localisation score")
 plt.title("{} Cell Localisation Scores Graph: Max Localisation".format(FILENAME))
 
-plt.axis([0.05, 0.27, 0.1, 0.42])
+plt.axis([0.22, 0.35, 0.22, 0.35])
 
 
 texts = [plt.text(y, z, x) for x, y, z in zip(dataframe["image-index"], x, y)]
@@ -58,7 +58,7 @@ a, b = np.polyfit(x, y, 1)
 plt.plot(x, a*x+b, color='grey', linestyle='solid', linewidth=1)
 
 plt.savefig(
-    "{}/{} Cell Localisation Scores Max Localisation.png".format(
+    "{}/{} Cell Localisation Scores Max Localisation - SSIM 7 Metric.png".format(
         CELLDIRECTORY, FILENAME
     ),
     bbox_inches="tight",
