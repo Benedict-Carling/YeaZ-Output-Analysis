@@ -5,12 +5,15 @@ import pandas as pd
 import h5py
 from scipy.ndimage import gaussian_filter, binary_erosion, binary_dilation
 
-CELLFOLDER = "april5"
+CELLFOLDER = "april5-denoise"
 CELLDIRECTORY = "data/" + CELLFOLDER + "/"
 
 ND2FILE = CELLDIRECTORY + "ChannelMono,Red,Green,Blue_Seq0000.nd2"
 MASKFILE = CELLDIRECTORY + "newmaskfile.h5"
 CELLOUT = CELLDIRECTORY + "cells-ratio.pkl"
+
+import warnings
+warnings.simplefilter("ignore")
 
 # Default order
 # –––––––––––––

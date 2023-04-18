@@ -13,18 +13,14 @@ df = pd.read_pickle(CELLPATH)
 
 df, _centroids = addPopulationCharacterisation(df)
 
-df["maxLocalisation"] = df[
-    ["greenBlueCorrelation1", "greenBlueCorrelation2", "greenBlueCorrelation0"]
-].max(axis=1)
-
 lowPopulation = df[df["is_low_population"]]
 highPopulation = df[df["is_high_population"]]
 
 group_low = lowPopulation.groupby(["image-index"], as_index=False).agg(
-    {"maxLocalisation": "mean", "cellId": "count"}
+    {"scoreMax": "mean", "cellId": "count"}
 )
 group_high = highPopulation.groupby(["image-index"], as_index=False).agg(
-    {"maxLocalisation": "mean", "cellId": "count"}
+    {"scoreMax": "mean", "cellId": "count"}
 )
 
 dataframe = pd.merge(
@@ -39,16 +35,16 @@ species = [str(item) for item in dataframe["image-index"].unique()]
 
 print(species)
 
-x = dataframe["maxLocalisation_low"]
-y = dataframe["maxLocalisation_high"]
+x = dataframe["scoreMax_low"]
+y = dataframe["scoreMax_high"]
 
 plt.gcf().set_size_inches(16, 9)
 plt.scatter(x, y,color="steelblue", alpha=0.3)  # density=False would make counts
 plt.ylabel("Low subpopulation localisation score")
 plt.xlabel("High subpopulation localisation score")
-plt.title("{} Cell Localisation Scores Graph: Max Localisation".format(FILENAME))
+plt.title("{} Cell Localisation Scores Graph: Max Localisation Ratio".format(FILENAME))
 
-plt.axis([0.22, 0.35, 0.22, 0.35])
+plt.axis([1,2.1,1,2.1])
 
 
 texts = [plt.text(y, z, x) for x, y, z in zip(dataframe["image-index"], x, y)]
@@ -58,7 +54,7 @@ a, b = np.polyfit(x, y, 1)
 plt.plot(x, a*x+b, color='grey', linestyle='solid', linewidth=1)
 
 plt.savefig(
-    "{}/{} Cell Localisation Scores Max Localisation - SSIM 7 Metric.png".format(
+    "{}/{} Cell Localisation Scores Max Localisation - Ratio Metric Labels.png".format(
         CELLDIRECTORY, FILENAME
     ),
     bbox_inches="tight",
