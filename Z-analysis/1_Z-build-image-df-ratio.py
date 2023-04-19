@@ -13,6 +13,7 @@ MASKFILE = CELLDIRECTORY + "newmaskfile.h5"
 CELLOUT = CELLDIRECTORY + "cells-ratio.pkl"
 
 import warnings
+
 warnings.simplefilter("ignore")
 
 # Default order
@@ -47,6 +48,7 @@ def flatten(lst):
             result.append(item)
     return result
 
+
 def grayscale_to_binary(image, threshold):
     """
     Converts a grayscale image to a binary image based on a threshold value.
@@ -54,12 +56,14 @@ def grayscale_to_binary(image, threshold):
     binary = np.where(image > threshold, 1, 0)
     return binary
 
+
 def apply_gaussian_blur(image, sigma):
     """
     Applies a Gaussian blur to a grayscale image.
     """
     blurred_image = gaussian_filter(image, sigma=sigma)
     return blurred_image
+
 
 def erode_then_dilate(image, kernel_size):
     """
@@ -70,6 +74,7 @@ def erode_then_dilate(image, kernel_size):
     dilated = binary_dilation(eroded, structure=kernel)
     return dilated
 
+
 def get_cell_nucleus(bfp_channel):
     blurred_image = apply_gaussian_blur(bfp_channel, sigma=1)
     withoutzeros = blurred_image[blurred_image != 0]
@@ -78,8 +83,8 @@ def get_cell_nucleus(bfp_channel):
     result_image = erode_then_dilate(binary_image, kernel_size=3)
     return result_image
 
-def mean_pixel_value(image, mask):
 
+def mean_pixel_value(image, mask):
     """
     Finds the mean pixel value of a grayscale image within a binary mask.
     """
@@ -89,6 +94,7 @@ def mean_pixel_value(image, mask):
     mean = multiplied_mask[multiplied_mask != 0]
     return np.mean(mean)
 
+
 def invert_binary_image(image):
     """
     Inverts a binary segmentation image.
@@ -96,11 +102,14 @@ def invert_binary_image(image):
     inverted_image = np.logical_not(image)
     return inverted_image
 
-def nuclear_cytosolic_ratio(gfp_channel,bfp_channel):
+
+def nuclear_cytosolic_ratio(gfp_channel, bfp_channel):
     nucleus_mask = get_cell_nucleus(bfp_channel)
-    nuclear_score = mean_pixel_value(gfp_channel,nucleus_mask)
-    cytosolic_score = mean_pixel_value(gfp_channel,invert_binary_image(nucleus_mask))
-    return nuclear_score / cytosolic_score
+    nuclear_score = mean_pixel_value(gfp_channel, nucleus_mask)
+    cytosolic_score = mean_pixel_value(gfp_channel, invert_binary_image(nucleus_mask))
+    loc_score = nuclear_score / cytosolic_score
+    return loc_score, nuclear_score
+
 
 def Nd2toDataFrame(path):
     print("Converting ND2 File to Dataframe")
@@ -145,22 +154,22 @@ def readh5mask(path):
             index = int(key.removeprefix("FOV"))
             if index == 192 or index != 191:
                 df = pd.concat(
-                [
-                    df,
-                    pd.DataFrame(
-                        [
-                            {
-                                "image-index": int(index + 1),
-                                "field-of-view": int((index) // 9) + 1,
-                                "channel": "Mask",
-                                "z-index": 3,
-                                "image": df1,
-                            }
-                        ]
-                    ),
-                ],
-                ignore_index=True,
-            )
+                    [
+                        df,
+                        pd.DataFrame(
+                            [
+                                {
+                                    "image-index": int(index + 1),
+                                    "field-of-view": int((index) // 9) + 1,
+                                    "channel": "Mask",
+                                    "z-index": 3,
+                                    "image": df1,
+                                }
+                            ]
+                        ),
+                    ],
+                    ignore_index=True,
+                )
     f.close()
     return df
 
@@ -267,12 +276,13 @@ def CreateCellDataFrama(df):
             greenWindow2 = greenChannel2["image"][x1 : (x2 + 1), y1 : (y2 + 1)]
             greenCell2 = np.multiply(greenWindow2, BinaryCellMask)
 
-            score0 = nuclear_cytosolic_ratio(greenCell0,blueCell0)
-            score1 = nuclear_cytosolic_ratio(greenCell1,blueCell1)
-            score2 = nuclear_cytosolic_ratio(greenCell2,blueCell2)
-            scoreMax = np.nanmax([score0,score1,score2])
+            score0, nuc_score0 = nuclear_cytosolic_ratio(greenCell0, blueCell0)
+            score1, nuc_score1 = nuclear_cytosolic_ratio(greenCell1, blueCell1)
+            score2, nuc_score2 = nuclear_cytosolic_ratio(greenCell2, blueCell2)
+            scoreMax = np.nanmax([score0, score1, score2])
+            nuc_scoreMax = np.nanmax([nuc_score0, nuc_score1, nuc_score2])
 
-            if (scoreMax):
+            if scoreMax:
                 celldf = pd.concat(
                     [
                         celldf,
@@ -289,7 +299,11 @@ def CreateCellDataFrama(df):
                                     "score0": score0,
                                     "score1": score1,
                                     "score2": score2,
-                                    "scoreMax":scoreMax,
+                                    "nuc_score0": nuc_score0,
+                                    "nuc_score1": nuc_score1,
+                                    "nuc_score2": nuc_score2,
+                                    "scoreMax": scoreMax,
+                                    "nuc_scoreMax": nuc_scoreMax
                                 }
                             ]
                         ),

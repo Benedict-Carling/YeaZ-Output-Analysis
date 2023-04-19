@@ -16,6 +16,7 @@ df = pd.read_pickle(CELLPATH)
 ## That is the best guess of the nucleus
 ## Then find the ratio
 
+
 def flatten(lst):
     """
     Flattens a nested list into a single list.
@@ -28,6 +29,7 @@ def flatten(lst):
             result.append(item)
     return result
 
+
 def grayscale_to_binary(image, threshold):
     """
     Converts a grayscale image to a binary image based on a threshold value.
@@ -35,12 +37,14 @@ def grayscale_to_binary(image, threshold):
     binary = np.where(image > threshold, 1, 0)
     return binary
 
+
 def apply_gaussian_blur(image, sigma):
     """
     Applies a Gaussian blur to a grayscale image.
     """
     blurred_image = gaussian_filter(image, sigma=sigma)
     return blurred_image
+
 
 def erode_then_dilate(image, kernel_size):
     """
@@ -51,6 +55,7 @@ def erode_then_dilate(image, kernel_size):
     dilated = binary_dilation(eroded, structure=kernel)
     return dilated
 
+
 def get_cell_nucleus(bfp_channel):
     blurred_image = apply_gaussian_blur(bfp_channel, sigma=1)
     withoutzeros = blurred_image[blurred_image != 0]
@@ -59,8 +64,8 @@ def get_cell_nucleus(bfp_channel):
     result_image = erode_then_dilate(binary_image, kernel_size=3)
     return result_image
 
-def mean_pixel_value(image, mask):
 
+def mean_pixel_value(image, mask):
     """
     Finds the mean pixel value of a grayscale image within a binary mask.
     """
@@ -70,6 +75,7 @@ def mean_pixel_value(image, mask):
     mean = multiplied_mask[multiplied_mask != 0]
     return np.mean(mean)
 
+
 def invert_binary_image(image):
     """
     Inverts a binary segmentation image.
@@ -77,13 +83,15 @@ def invert_binary_image(image):
     inverted_image = np.logical_not(image)
     return inverted_image
 
-def nuclear_cytosolic_ratio(gfp_channel,bfp_channel):
+
+def nuclear_cytosolic_ratio(gfp_channel, bfp_channel):
     nucleus_mask = get_cell_nucleus(bfp_channel)
-    nuclear_score = mean_pixel_value(gfp_channel,nucleus_mask)
-    cytosolic_score = mean_pixel_value(gfp_channel,invert_binary_image(nucleus_mask))
+    nuclear_score = mean_pixel_value(gfp_channel, nucleus_mask)
+    cytosolic_score = mean_pixel_value(gfp_channel, invert_binary_image(nucleus_mask))
     return nuclear_score / cytosolic_score
 
-df = df.set_index('cellId')
+
+df = df.set_index("cellId")
 df = df[df["score1"].isna()]
 print(df)
 item = df.loc[2]
@@ -121,4 +129,3 @@ print(item)
 
 # # Print the result
 # print(mean_value)
-

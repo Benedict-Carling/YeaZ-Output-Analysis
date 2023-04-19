@@ -38,7 +38,7 @@ def addPopulationCharacterisation(df):
     # Used K - means clustering to kind the centriods 2 sub population
     # [[196.95771045 189.68542636]
     #  [479.8426798  240.08666979]]
-    centroids = [[196.95771045, 185.42314231],[472.19301061, 235.09982935]]
+    centroids = [[196.95771045, 185.42314231], [472.19301061, 235.09982935]]
 
     g_ell_center = centroids[0]
     g_ell_width = 100
@@ -121,6 +121,7 @@ def graph():
         bbox_inches="tight",
         dpi=200,
     )
+
 
 # graph()
 
