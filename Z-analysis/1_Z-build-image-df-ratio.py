@@ -119,25 +119,24 @@ def Nd2toDataFrame(path):
     )
     for imageIndex, item in enumerate(f):
         print("Converting ND2 at index: ", imageIndex)
-        if imageIndex == 190 or imageIndex != 191:
-            for zIndex, z in enumerate(item):
-                for channelIndex, channel in enumerate(z):
-                    df = pd.concat(
-                        [
-                            df,
-                            pd.DataFrame(
-                                [
-                                    {
-                                        "image-index": imageIndex + 1,
-                                        "field-of-view": ((imageIndex) // 9) + 1,
-                                        "channel": channelIndexToName(channelIndex),
-                                        "z-index": zIndex,
-                                        "image": channel,
-                                    }
-                                ]
-                            ),
-                        ]
-                    )
+        for zIndex, z in enumerate(item):
+            for channelIndex, channel in enumerate(z):
+                df = pd.concat(
+                    [
+                        df,
+                        pd.DataFrame(
+                            [
+                                {
+                                    "image-index": imageIndex + 1,
+                                    "field-of-view": ((imageIndex) // 9) + 1,
+                                    "channel": channelIndexToName(channelIndex),
+                                    "z-index": zIndex,
+                                    "image": channel,
+                                }
+                            ]
+                        ),
+                    ]
+                )
     return df
 
 
@@ -152,24 +151,23 @@ def readh5mask(path):
             b_group_key = list(data.keys())[0]
             df1 = np.array(f[key][b_group_key][()])
             index = int(key.removeprefix("FOV"))
-            if index == 192 or index != 191:
-                df = pd.concat(
-                    [
-                        df,
-                        pd.DataFrame(
-                            [
-                                {
-                                    "image-index": int(index + 1),
-                                    "field-of-view": int((index) // 9) + 1,
-                                    "channel": "Mask",
-                                    "z-index": 3,
-                                    "image": df1,
-                                }
-                            ]
-                        ),
-                    ],
-                    ignore_index=True,
-                )
+            df = pd.concat(
+                [
+                    df,
+                    pd.DataFrame(
+                        [
+                            {
+                                "image-index": int(index + 1),
+                                "field-of-view": int((index) // 9) + 1,
+                                "channel": "Mask",
+                                "z-index": 3,
+                                "image": df1,
+                            }
+                        ]
+                    ),
+                ],
+                ignore_index=True,
+            )
     f.close()
     return df
 
@@ -312,16 +310,20 @@ def CreateCellDataFrama(df):
     return celldf
 
 
-nd2df = Nd2toDataFrame(ND2FILE)
-print(nd2df)
+# nd2df = Nd2toDataFrame(ND2FILE)
+# print(nd2df)
 h5df = readh5mask(MASKFILE)
 print(h5df)
-totaldf = pd.concat([nd2df, h5df])
-# Suppress/hide the warning
-np.seterr(invalid="ignore")
-celldf = CreateCellDataFrama(totaldf)
-print(totaldf)
-print(celldf)
+print(h5df.sort_values(["image-index"])["image-index"].unique())
+
+print()
+
+# totaldf = pd.concat([nd2df, h5df])
+# # Suppress/hide the warning
+# np.seterr(invalid="ignore")
+# celldf = CreateCellDataFrama(totaldf)
+# print(totaldf)
+# print(celldf)
 
 try:
     celldf.to_pickle(CELLOUT)

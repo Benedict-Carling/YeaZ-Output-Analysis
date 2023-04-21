@@ -162,17 +162,17 @@ def getSubPopulationsMerged(df):
 
 # print(result)
 
-print(df)
+print(df.groupby("image-index").count())
 
-sub1,sub2 = em_clustering(df,"size","meanRedValue")
-sub1["color"] = "red"
+# sub1,sub2 = em_clustering(df,"size","meanRedValue")
+# sub1["color"] = "red"
 
-sub2["color"] = "blue"
-totaldf = combine_dataframes(sub1,sub2)
+# sub2["color"] = "blue"
+# totaldf = combine_dataframes(sub1,sub2)
 
-print(totaldf)
+# print(totaldf)
 
-graph(totaldf)
+# graph(totaldf)
 
 
 
