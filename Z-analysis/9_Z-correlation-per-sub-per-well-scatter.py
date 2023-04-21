@@ -1,3 +1,4 @@
+from get_sub_pop import getSubPopulationsMerged
 from low_high_selection import addPopulationCharacterisation
 from analysis_directory import CELLPATH
 import matplotlib.pyplot as plt
@@ -9,12 +10,12 @@ from analysis_directory import CELLPATH
 from analysis_directory import CELLDIRECTORY
 from analysis_directory import FILENAME
 
-df = pd.read_pickle(CELLPATH)
+rawdf = pd.read_pickle(CELLPATH)
 
-df, _centroids = addPopulationCharacterisation(df)
+df = getSubPopulationsMerged(rawdf)
 
-lowPopulation = df[df["is_low_population"]]
-highPopulation = df[df["is_high_population"]]
+lowPopulation = df[df["population"]=="low"]
+highPopulation = df[df["population"]=="high"]
 
 group_low = lowPopulation.groupby(["image-index"], as_index=False).agg(
     {"scoreMax": "mean", "cellId": "count"}
@@ -44,11 +45,11 @@ plt.ylabel("Low subpopulation localisation score")
 plt.xlabel("High subpopulation localisation score")
 plt.title("{} Cell Localisation Scores Graph: Max Localisation Ratio".format(FILENAME))
 
-plt.axis([1, 2.1, 1, 2.1])
+# plt.axis([1, 2.1, 1, 2.1])
 
 
-texts = [plt.text(y, z, x) for x, y, z in zip(dataframe["image-index"], x, y)]
-adjust_text(texts, arrowprops=dict(arrowstyle="-", color="k", lw=0.1))
+# texts = [plt.text(y, z, x) for x, y, z in zip(dataframe["image-index"], x, y)]
+# adjust_text(texts, arrowprops=dict(arrowstyle="-", color="k", lw=0.1))
 
 a, b = np.polyfit(x, y, 1)
 plt.plot(x, a * x + b, color="grey", linestyle="solid", linewidth=1)

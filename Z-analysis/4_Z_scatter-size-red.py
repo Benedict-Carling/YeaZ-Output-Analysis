@@ -9,11 +9,11 @@ from scipy.spatial.distance import cdist
 
 df = pd.read_pickle(CELLPATH)
 
-df = df[df["size"] > 60]
+df = df[df["size"] > 120]
 df = df[df["size"] < 700]
 
 df = df[df["meanRedValue"] > 110]
-df = df[df["meanRedValue"] < 350]
+df = df[df["meanRedValue"] < 450]
 
 # April5
 # Low 100-310 size
@@ -24,7 +24,7 @@ print(df)
 plt.scatter(
     df["size"], df["meanRedValue"], alpha=0.003
 )  # density=False would make counts
-plt.axis([60, 700, 110, 350])
+plt.axis([120, 700, 110, 450])
 plt.gcf().set_size_inches(16, 9)
 plt.ylabel("Mean Red")
 plt.xlabel("Size")
