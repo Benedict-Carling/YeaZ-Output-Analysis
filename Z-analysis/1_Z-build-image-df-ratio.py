@@ -310,20 +310,20 @@ def CreateCellDataFrama(df):
     return celldf
 
 
-# nd2df = Nd2toDataFrame(ND2FILE)
-# print(nd2df)
+nd2df = Nd2toDataFrame(ND2FILE)
+print(nd2df)
 h5df = readh5mask(MASKFILE)
 print(h5df)
 print(h5df.sort_values(["image-index"])["image-index"].unique())
 
 print()
 
-# totaldf = pd.concat([nd2df, h5df])
-# # Suppress/hide the warning
-# np.seterr(invalid="ignore")
-# celldf = CreateCellDataFrama(totaldf)
-# print(totaldf)
-# print(celldf)
+totaldf = pd.concat([nd2df, h5df])
+# Suppress/hide the warning
+np.seterr(invalid="ignore")
+celldf = CreateCellDataFrama(totaldf)
+print(totaldf)
+print(celldf)
 
 try:
     celldf.to_pickle(CELLOUT)
