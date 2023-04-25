@@ -78,7 +78,7 @@ def erode_then_dilate(image, kernel_size):
 def get_cell_nucleus(bfp_channel):
     blurred_image = apply_gaussian_blur(bfp_channel, sigma=1)
     withoutzeros = blurred_image[blurred_image != 0]
-    p = np.percentile(withoutzeros, 90)
+    p = np.percentile(withoutzeros, 85)
     binary_image = grayscale_to_binary(blurred_image, p)
     result_image = erode_then_dilate(binary_image, kernel_size=3)
     return result_image
