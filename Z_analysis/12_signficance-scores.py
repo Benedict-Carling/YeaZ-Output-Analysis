@@ -6,12 +6,11 @@ import scipy.stats as stats
 import pandas as pd
 
 from analysis_directory import CELLPATH
+from analysis_directory import EXPERIMENTNAME
 
 rawdf = pd.read_pickle(CELLPATH)
 
-df = getSubPopulationsMerged(rawdf)
-
-# metrics = df.groupby(["image-index","population"]).agg({"scoreMax":["mean","sem","count"]})
+df = getSubPopulationsMerged(rawdf,EXPERIMENTNAME)
 
 def group_cells_by_image_and_color(df):
     """

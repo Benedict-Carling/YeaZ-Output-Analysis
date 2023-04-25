@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import cv2
 from scipy.ndimage import gaussian_filter, binary_erosion, binary_dilation
 
-CELLFOLDER = "april5"
-CELLPATH = "data/" + CELLFOLDER + "/cells-ratio.pkl"
+EXPERIMENTNAME = "april5"
+CELLPATH = "data/" + EXPERIMENTNAME + "/cells-ratio.pkl"
 
 
 df = pd.read_pickle(CELLPATH)

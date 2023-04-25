@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-LIBFOLDER = "Z-analysis/"
+LIBFOLDER = "Z_analysis/"
 LIBPATH = LIBFOLDER + "tf-lib.csv"
 
 def getTfDf():

@@ -1,20 +1,18 @@
+from typing import Literal
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.mixture import GaussianMixture
 from sklearn.neighbors import KernelDensity
 import json
+from spatial_limit import Limitdf, getAxisLimit
 
 from analysis_directory import CELLPATH
 from analysis_directory import CELLDIRECTORY
 from analysis_directory import FILENAME
+from analysis_directory import EXPERIMENTNAME
 
 pd.options.mode.chained_assignment = None
-
-
-df = pd.read_pickle(CELLPATH)
-
-df = Limitdf(df,"a")
 
 
 def em_clustering(df, x_axis, y_axis, num_clusters=2, confidence=0.90):
@@ -81,17 +79,19 @@ def filter_by_density(df, x_col, y_col):
     return filtered_df
 
 
-def graph(df):
+def graph(df, axis, name):
+    plt.clf()
+    plt.cla()
     plt.scatter(df["size"], df["meanRedValue"], color=df["color"], s=5, alpha=0.03)
     # plt.scatter(centroids[:, 0], centroids[:, 1], c="green", s=50)
     plt.gcf().set_size_inches(16, 9)
-    plt.axis([60, 700, 110, 350])
+    plt.axis(axis)
     plt.ylabel("Mean Red")
     plt.xlabel("Size")
-    plt.title("{} Cell Scatter Graph - No cells {}".format(FILENAME, len(df)))
+    plt.title("{} {} - No cells {}".format(FILENAME,name, len(df)))
     plt.savefig(
-        "{}/{} Cell Scatter Expectation Maximisation.png".format(
-            CELLDIRECTORY, FILENAME
+        "{}/{} Cell Scatter {}.png".format(
+            CELLDIRECTORY, FILENAME, name
         ),
         bbox_inches="tight",
         dpi=200,
@@ -137,8 +137,15 @@ def save_dict_to_json_file(dict_data, file_path):
     with open(file_path, "w") as f:
         json.dump(dict_data, f)
 
-def getSubPopulationsMerged(df):
+def getSubPopulationsMerged(df,type: Literal["april5","april6-4"],with_graph = False):
+    df = Limitdf(df,type)
     dfclean = filter_by_density(df, "size", "meanRedValue")
+    # Graph Density scatter
+    if with_graph:
+        axis = getAxisLimit(type)
+        densityCopy = dfclean.copy()
+        densityCopy["color"] = "green"
+        graph(densityCopy,axis,"Filter by density")
 
     sub1, sub2 = em_clustering(dfclean, "size", "meanRedValue")
 
@@ -148,12 +155,15 @@ def getSubPopulationsMerged(df):
     sub2["population"] = "low"
 
     totaldf = combine_dataframes(sub1, sub2)
+
+    if with_graph:
+        axis = getAxisLimit(type)
+        subpopCopy = totaldf.copy()
+        graph(subpopCopy,axis,"Expectation Maximisation")
     return totaldf
 
-cleandf = filter_by_density(df, "size", "meanRedValue")
-cleandf["color"] = "green"
-
-graph(cleandf)
+df = pd.read_pickle(CELLPATH)
+getSubPopulationsMerged(df,EXPERIMENTNAME,True)
 
 
 

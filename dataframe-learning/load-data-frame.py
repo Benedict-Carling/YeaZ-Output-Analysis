@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
 
-CELLFOLDER = "april5"
-CELLPATH = "data/" + CELLFOLDER + "/cells.pkl"
+EXPERIMENTNAME = "april5"
+CELLPATH = "data/" + EXPERIMENTNAME + "/cells.pkl"
 
 
 df = pd.read_pickle(CELLPATH)
