@@ -11,7 +11,7 @@ rawdf = pd.read_pickle(CELLPATH)
 
 df = getSubPopulationsMerged(rawdf)
 
-metrics = df.groupby(["image-index","population"]).agg({"scoreMax":["mean","sem","count"]})
+# metrics = df.groupby(["image-index","population"]).agg({"scoreMax":["mean","sem","count"]})
 
 def group_cells_by_image_and_color(df):
     """
@@ -57,20 +57,18 @@ def calc_new_pvalue(row):
    return score.pvalue
     
 
-# print(df)
-# print(metrics)
 result_dict = group_cells_by_image_and_color(df)
 raw_pandas_dict = pd.DataFrame(result_dict)
 pandas_dict = raw_pandas_dict.transpose()
 pandas_dict["ttest"] = pandas_dict.apply(calc_new_stat, axis=1)
 pandas_dict["ttest_p"] = pandas_dict.apply(calc_new_pvalue, axis=1)
 
+print(pandas_dict)
+
 dataonly = pandas_dict[["ttest","ttest_p"]]
 
 tfdf = getTfDf()
 
-fdas = dataonly.join(tfdf)
+candidates = dataonly.join(tfdf)
 
-# filtered = dataonly[dataonly["ttest_p"] <= 0.002]
-
-print(fdas)
+candidates.sort_values("ttest_p").to_csv("candidates_GLN.csv")

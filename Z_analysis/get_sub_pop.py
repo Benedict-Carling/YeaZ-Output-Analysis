@@ -14,11 +14,7 @@ pd.options.mode.chained_assignment = None
 
 df = pd.read_pickle(CELLPATH)
 
-# df = df[df["size"] > 60]
-df = df[df["size"] < 700]
-
-# df = df[df["meanRedValue"] > 110]
-df = df[df["meanRedValue"] < 350]
+df = Limitdf(df,"a")
 
 
 def em_clustering(df, x_axis, y_axis, num_clusters=2, confidence=0.90):
@@ -154,25 +150,10 @@ def getSubPopulationsMerged(df):
     totaldf = combine_dataframes(sub1, sub2)
     return totaldf
 
-# print(totaldf)
+cleandf = filter_by_density(df, "size", "meanRedValue")
+cleandf["color"] = "green"
 
-# result = group_cells_by_image_and_color(totaldf)
-
-# save_dict_to_json_file(result, "{}labelled_cells.json".format(CELLDIRECTORY))
-
-# print(result)
-
-# print(df)
-
-# sub1,sub2 = em_clustering(df,"size","meanRedValue")
-# sub1["color"] = "red"
-
-# sub2["color"] = "blue"
-# totaldf = combine_dataframes(sub1,sub2)
-
-# print(totaldf)
-
-# graph(totaldf)
+graph(cleandf)
 
 
 
