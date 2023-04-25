@@ -114,13 +114,17 @@ def readh5mask(path, labels):
             )
             try:
                 mask2img(
-                    "{}/{}_{}_{}.png".format(SUBPOP_MASKS, int(index + 1), "blue", "mask"),
+                    "{}/{}_{}_{}.png".format(
+                        SUBPOP_MASKS, int(index + 1), "blue", "mask"
+                    ),
                     df1,
                     labels[str(float(index + 1))]["blue"],
                     (255, 0, 0),
                 )
                 mask2img(
-                    "{}/{}_{}_{}.png".format(SUBPOP_MASKS, int(index + 1), "red", "mask"),
+                    "{}/{}_{}_{}.png".format(
+                        SUBPOP_MASKS, int(index + 1), "red", "mask"
+                    ),
                     df1,
                     labels[str(float(index + 1))]["red"],
                     (0, 0, 255),

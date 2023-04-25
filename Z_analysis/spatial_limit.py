@@ -18,18 +18,21 @@ df = pd.read_pickle(CELLPATH)
 # Size 120 - 700
 # Red 110 - 450
 
-def Limitdf(df,type: Literal["april5","april6-4"]):
-    if type=="april6-4":
+
+def Limitdf(df, type: Literal["april5", "april6-4"]):
+    if type == "april6-4":
         df = df[df["size"] > 130]
         df = df[df["size"] < 700]
         df = df[df["meanRedValue"] > 110]
         df = df[df["meanRedValue"] < 450]
     return df
 
-def getAxisLimit(type: Literal["april5","april6-4"]):
-    if type=="april5":
+
+def getAxisLimit(type: Literal["april5", "april6-4"]):
+    if type == "april5":
         return [60, 700, 110, 350]
-    if type=="april6-4":
-        return [130,700,110,450]
+    if type == "april6-4":
+        return [130, 700, 110, 450]
+
 
 # print(df)

@@ -1,3 +1,5 @@
+from analysis_path import CELLDIRECTORY
+
 from typing import List
 import nd2
 import numpy as np
@@ -5,8 +7,6 @@ import pandas as pd
 import h5py
 from scipy.ndimage import gaussian_filter, binary_erosion, binary_dilation
 
-EXPERIMENTNAME = "april5-denoise"
-CELLDIRECTORY = "data/" + EXPERIMENTNAME + "/"
 
 ND2FILE = CELLDIRECTORY + "ChannelMono,Red,Green,Blue_Seq0000.nd2"
 MASKFILE = CELLDIRECTORY + "newmaskfile.h5"
@@ -114,29 +114,25 @@ def nuclear_cytosolic_ratio(gfp_channel, bfp_channel):
 def Nd2toDataFrame(path):
     print("Converting ND2 File to Dataframe")
     f = nd2.imread(path)
-    df = pd.DataFrame(
-        columns=["image-index", "field-of-view", "channel", "z-index", "image"]
-    )
+    df = pd.DataFrame(columns=["image-index", "field-of-view", "channel", "image"])
     for imageIndex, item in enumerate(f):
         print("Converting ND2 at index: ", imageIndex)
-        for zIndex, z in enumerate(item):
-            for channelIndex, channel in enumerate(z):
-                df = pd.concat(
-                    [
-                        df,
-                        pd.DataFrame(
-                            [
-                                {
-                                    "image-index": imageIndex + 1,
-                                    "field-of-view": ((imageIndex) // 9) + 1,
-                                    "channel": channelIndexToName(channelIndex),
-                                    "z-index": zIndex,
-                                    "image": channel,
-                                }
-                            ]
-                        ),
-                    ]
-                )
+        for channelIndex, channel in enumerate(item):
+            df = pd.concat(
+                [
+                    df,
+                    pd.DataFrame(
+                        [
+                            {
+                                "image-index": imageIndex + 1,
+                                "field-of-view": ((imageIndex) // 2) + 1,
+                                "channel": channelIndexToName(channelIndex),
+                                "image": channel,
+                            }
+                        ]
+                    ),
+                ]
+            )
     return df
 
 
@@ -158,10 +154,10 @@ def readh5mask(path):
                         [
                             {
                                 "image-index": int(index + 1),
-                                "field-of-view": int((index) // 9) + 1,
+                                "field-of-view": int((index) // 2) + 1,
                                 "channel": "Mask",
-                                "z-index": 3,
                                 "image": df1,
+                                "max": df1.max(),
                             }
                         ]
                     ),
@@ -196,10 +192,7 @@ def CreateCellDataFrama(df):
             "cellId",
             "size",
             "meanRedValue",
-            "score0",
-            "score1",
-            "score2",
-            "scoreMax",
+            "score",
         ]
     )
     masks = df[df["channel"] == "Mask"]
@@ -224,63 +217,21 @@ def CreateCellDataFrama(df):
 
             # blue 0
             blueChannel0 = df.loc[
-                (df["channel"] == "Blue")
-                & (df["image-index"] == item["image-index"])
-                & (df["z-index"] == 0)
+                (df["channel"] == "Blue") & (df["image-index"] == item["image-index"])
             ].iloc[0]
             blueWindow0 = blueChannel0["image"][x1 : (x2 + 1), y1 : (y2 + 1)]
             blueCell0 = np.multiply(blueWindow0, BinaryCellMask)
 
-            # blue 1
-            blueChannel1 = df.loc[
-                (df["channel"] == "Blue")
-                & (df["image-index"] == item["image-index"])
-                & (df["z-index"] == 1)
-            ].iloc[0]
-            blueWindow1 = blueChannel1["image"][x1 : (x2 + 1), y1 : (y2 + 1)]
-            blueCell1 = np.multiply(blueWindow1, BinaryCellMask)
-
-            # blue 2
-            blueChannel2 = df.loc[
-                (df["channel"] == "Blue")
-                & (df["image-index"] == item["image-index"])
-                & (df["z-index"] == 2)
-            ].iloc[0]
-            blueWindow2 = blueChannel2["image"][x1 : (x2 + 1), y1 : (y2 + 1)]
-            blueCell2 = np.multiply(blueWindow2, BinaryCellMask)
-
             # Green 0
             greenChannel0 = df.loc[
-                (df["channel"] == "Green")
-                & (df["image-index"] == item["image-index"])
-                & (df["z-index"] == 0)
+                (df["channel"] == "Green") & (df["image-index"] == item["image-index"])
             ].iloc[0]
             greenWindow0 = greenChannel0["image"][x1 : (x2 + 1), y1 : (y2 + 1)]
             greenCell0 = np.multiply(greenWindow0, BinaryCellMask)
-            # Green 1
-            greenChannel1 = df.loc[
-                (df["channel"] == "Green")
-                & (df["image-index"] == item["image-index"])
-                & (df["z-index"] == 1)
-            ].iloc[0]
-            greenWindow1 = greenChannel1["image"][x1 : (x2 + 1), y1 : (y2 + 1)]
-            greenCell1 = np.multiply(greenWindow1, BinaryCellMask)
-            # Green 2
-            greenChannel2 = df.loc[
-                (df["channel"] == "Green")
-                & (df["image-index"] == item["image-index"])
-                & (df["z-index"] == 2)
-            ].iloc[0]
-            greenWindow2 = greenChannel2["image"][x1 : (x2 + 1), y1 : (y2 + 1)]
-            greenCell2 = np.multiply(greenWindow2, BinaryCellMask)
 
             score0, nuc_score0 = nuclear_cytosolic_ratio(greenCell0, blueCell0)
-            score1, nuc_score1 = nuclear_cytosolic_ratio(greenCell1, blueCell1)
-            score2, nuc_score2 = nuclear_cytosolic_ratio(greenCell2, blueCell2)
-            scoreMax = np.nanmax([score0, score1, score2])
-            nuc_scoreMax = np.nanmax([nuc_score0, nuc_score1, nuc_score2])
 
-            if scoreMax:
+            if score0:
                 celldf = pd.concat(
                     [
                         celldf,
@@ -292,16 +243,7 @@ def CreateCellDataFrama(df):
                                     "cellId": cellId,
                                     "size": BinaryCellMask.sum(),
                                     "meanRedValue": redCell.mean(),
-                                    "blueCell1": blueCell1,
-                                    "greenCell1": greenCell1,
-                                    "score0": score0,
-                                    "score1": score1,
-                                    "score2": score2,
-                                    "nuc_score0": nuc_score0,
-                                    "nuc_score1": nuc_score1,
-                                    "nuc_score2": nuc_score2,
-                                    "scoreMax": scoreMax,
-                                    "nuc_scoreMax": nuc_scoreMax,
+                                    "score": score0,
                                 }
                             ]
                         ),
@@ -310,22 +252,17 @@ def CreateCellDataFrama(df):
     return celldf
 
 
-nd2df = Nd2toDataFrame(ND2FILE)
-print(nd2df)
+# nd2df = Nd2toDataFrame(ND2FILE)
 h5df = readh5mask(MASKFILE)
 print(h5df)
-print(h5df.sort_values(["image-index"])["image-index"].unique())
+# totaldf = pd.concat([nd2df, h5df])
+# # Suppress/hide the warning
+# np.seterr(invalid="ignore")
+# celldf = CreateCellDataFrama(totaldf)
+# print(totaldf)
+# print(celldf)
 
-print()
-
-totaldf = pd.concat([nd2df, h5df])
-# Suppress/hide the warning
-np.seterr(invalid="ignore")
-celldf = CreateCellDataFrama(totaldf)
-print(totaldf)
-print(celldf)
-
-try:
-    celldf.to_pickle(CELLOUT)
-except:
-    print("Unable to print")
+# try:
+#     celldf.to_pickle(CELLOUT)
+# except:
+#     print("Unable to print")

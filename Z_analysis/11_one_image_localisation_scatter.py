@@ -8,20 +8,21 @@ import math
 import statistics
 from scipy.stats import sem
 
+from analysis_directory import EXPERIMENTNAME
 from analysis_directory import CELLPATH
 from analysis_directory import CELLDIRECTORY
 from analysis_directory import FILENAME
 
 rawdf = pd.read_pickle(CELLPATH)
 
-cleandf = getSubPopulationsMerged(rawdf)
+cleandf = getSubPopulationsMerged(rawdf,EXPERIMENTNAME)
 
-IMAGE = 151
+IMAGE = 55
 
 df = cleandf[cleandf["image-index"] == IMAGE]
 
-lowPopulation = df[df["population"]=="low"]
-highPopulation = df[df["population"]=="high"]
+lowPopulation = df[df["population"] == "low"]
+highPopulation = df[df["population"] == "high"]
 
 print(lowPopulation)
 print(highPopulation)
@@ -34,16 +35,16 @@ chd = [x for x in hd if not math.isnan(x)]
 cld = [x for x in ld if not math.isnan(x)]
 print(IMAGE)
 print("High Population")
-print("Standard Error highPopulation",format(sem(chd),".5f"))
-print("Size highPopulation",len(chd))
-print("Standard Deviation highPopulation",format(statistics.stdev(chd), ".5f"))
+print("Standard Error highPopulation", format(sem(chd), ".5f"))
+print("Size highPopulation", len(chd))
+print("Standard Deviation highPopulation", format(statistics.stdev(chd), ".5f"))
 print("Low Population")
-print("Standard Error lowPopulation",format(sem(cld),".5f"))
-print("Size lowPopulation",len(cld))
-print("Standard Deviation lowPopulation",format(statistics.stdev(cld), ".5f"))
+print("Standard Error lowPopulation", format(sem(cld), ".5f"))
+print("Size lowPopulation", len(cld))
+print("Standard Deviation lowPopulation", format(statistics.stdev(cld), ".5f"))
 
-# highData = highPopulation[~highPopulation["scoreMax"].isna()] 
-# lowData = lowPopulation[~lowPopulation["scoreMax"].isna()] 
+# highData = highPopulation[~highPopulation["scoreMax"].isna()]
+# lowData = lowPopulation[~lowPopulation["scoreMax"].isna()]
 # hd = highData.tolist()
 # ld = lowData.tolist()
 
@@ -51,15 +52,13 @@ data = [chd, cld]
 
 # Multiple box plots on one Axes
 fig, ax = plt.subplots()
-ax.boxplot(data,labels=["high","low"])
+ax.boxplot(data, labels=["high", "low"])
 plt.title("{} Cell Localisation Scores Box plot - index {}".format(FILENAME, IMAGE))
 plt.ylabel("Nuclear Cytosolic Ratio Score")
 
 
 plt.savefig(
-    "{}/{} Cell Localisation Boxplot {}".format(
-        CELLDIRECTORY, FILENAME,IMAGE
-    ),
+    "{}/{} Cell Localisation Boxplot {}".format(CELLDIRECTORY, FILENAME, IMAGE),
     bbox_inches="tight",
     dpi=200,
 )
