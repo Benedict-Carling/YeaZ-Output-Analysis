@@ -164,5 +164,4 @@ def getSubPopulationsMerged(df, type: Literal["april5", "april6-4"], with_graph=
 
 
 df = pd.read_pickle(CELLPATH)
-graph(df, [])
-getSubPopulationsMerged(df, EXPERIMENTNAME, True)
+getSubPopulationsMerged(df, EXPERIMENTNAME, False)

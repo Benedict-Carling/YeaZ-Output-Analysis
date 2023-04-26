@@ -243,7 +243,9 @@ def CreateCellDataFrama(df):
                                     "cellId": cellId,
                                     "size": BinaryCellMask.sum(),
                                     "meanRedValue": redCell.mean(),
+                                    "meanGreenValue": greenCell0.mean(),
                                     "score": score0,
+                                    "nuc_score":nuc_score0
                                 }
                             ]
                         ),
@@ -252,17 +254,17 @@ def CreateCellDataFrama(df):
     return celldf
 
 
-# nd2df = Nd2toDataFrame(ND2FILE)
+nd2df = Nd2toDataFrame(ND2FILE)
 h5df = readh5mask(MASKFILE)
 print(h5df)
-# totaldf = pd.concat([nd2df, h5df])
-# # Suppress/hide the warning
-# np.seterr(invalid="ignore")
-# celldf = CreateCellDataFrama(totaldf)
-# print(totaldf)
-# print(celldf)
+totaldf = pd.concat([nd2df, h5df])
+# Suppress/hide the warning
+np.seterr(invalid="ignore")
+celldf = CreateCellDataFrama(totaldf)
+print(totaldf)
+print(celldf)
 
-# try:
-#     celldf.to_pickle(CELLOUT)
-# except:
-#     print("Unable to print")
+try:
+    celldf.to_pickle(CELLOUT)
+except:
+    print("Unable to print")
