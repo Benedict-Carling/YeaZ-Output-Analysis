@@ -5,12 +5,11 @@ import matplotlib.pyplot as plt
 from sklearn.mixture import GaussianMixture
 from sklearn.neighbors import KernelDensity
 import json
-from spatial_limit import Limitdf, getAxisLimit
-
-from analysis_path import CELLPATH
-from analysis_path import CELLDIRECTORY
-from analysis_path import FILENAME
-from analysis_path import EXPERIMENTNAME
+from helper_spatial_limit import Limitdf, getAxisLimit
+from helper_analysis_path import CELLPATH
+from helper_analysis_path import CELLDIRECTORY
+from helper_analysis_path import FILENAME
+from helper_analysis_path import EXPERIMENTNAME
 
 pd.options.mode.chained_assignment = None
 
@@ -48,9 +47,14 @@ def em_clustering(df, x_axis, y_axis, num_clusters=2, confidence=0.90):
     subgroup1 = filtered_df[filtered_df["label"] == 0]
     subgroup2 = filtered_df[filtered_df["label"] == 1]
 
-    # Return the two subgroups
-    return subgroup1, subgroup2
-
+        # Get the center of each cluster
+    print(gmm.means_)
+    if gmm.means_[0][0] <= gmm.means_[1][0]:
+        print("First group is the subgroup")
+        return subgroup1, subgroup2
+    else:
+        print("Second group is the subgroup, swapping order")
+        return subgroup2, subgroup1
 
 def combine_dataframes(*dfs):
     """
@@ -79,7 +83,7 @@ def filter_by_density(df, x_col, y_col):
     return filtered_df
 
 
-def graph(df, name, axis):
+def graph(df, name, axis = False):
     plt.clf()
     plt.cla()
     plt.scatter(df["size"], df["meanRedValue"], color=df["color"], s=5, alpha=0.03)
@@ -145,23 +149,23 @@ def getSubPopulationsMerged(df, type: Literal["april5", "april6-4"], with_graph=
         axis = getAxisLimit(type)
         densityCopy = dfclean.copy()
         densityCopy["color"] = "green"
-        graph(densityCopy, axis, "Filter by density")
+        graph(densityCopy, "Filter by density",axis)
 
     sub1, sub2 = em_clustering(dfclean, "size", "meanRedValue")
 
-    sub1["color"] = "red"
-    sub1["population"] = "high"
-    sub2["color"] = "blue"
-    sub2["population"] = "low"
+    sub1["color"] = "blue"
+    sub1["population"] = "low"
+    sub2["color"] = "red"
+    sub2["population"] = "high"
 
     totaldf = combine_dataframes(sub1, sub2)
 
     if with_graph:
         axis = getAxisLimit(type)
         subpopCopy = totaldf.copy()
-        graph(subpopCopy, axis, "Expectation Maximisation")
+        graph(subpopCopy,"Expectation Maximisation",axis)
     return totaldf
 
 
 df = pd.read_pickle(CELLPATH)
-getSubPopulationsMerged(df, EXPERIMENTNAME, False)
+getSubPopulationsMerged(df, EXPERIMENTNAME, True)

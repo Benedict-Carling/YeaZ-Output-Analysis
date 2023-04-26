@@ -8,6 +8,7 @@ import json
 from analysis_directory import CELLPATH
 from analysis_directory import CELLDIRECTORY
 from analysis_directory import FILENAME
+from analysis_directory import CELLFOLDER
 
 pd.options.mode.chained_assignment = None
 
@@ -156,22 +157,23 @@ def getSubPopulationsMerged(df):
     return totaldf
 
 
-# print(totaldf)
+df = pd.read_pickle(CELLPATH)
+totaldf = getSubPopulationsMerged(df, CELLFOLDER, False)
 
-# result = group_cells_by_image_and_color(totaldf)
 
-# save_dict_to_json_file(result, "{}labelled_cells.json".format(CELLDIRECTORY))
+print(totaldf)
 
-# print(result)
+result = group_cells_by_image_and_color(totaldf)
 
-print(df.groupby("image-index").count())
+save_dict_to_json_file(result, "{}labelled_cells.json".format(CELLDIRECTORY))
 
-# sub1,sub2 = em_clustering(df,"size","meanRedValue")
-# sub1["color"] = "red"
 
-# sub2["color"] = "blue"
-# totaldf = combine_dataframes(sub1,sub2)
+sub1,sub2 = em_clustering(df,"size","meanRedValue")
+sub1["color"] = "red"
 
-# print(totaldf)
+sub2["color"] = "blue"
+totaldf = combine_dataframes(sub1,sub2)
 
-# graph(totaldf)
+print(totaldf)
+
+graph(totaldf)
