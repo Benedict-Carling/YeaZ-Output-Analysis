@@ -245,7 +245,7 @@ def CreateCellDataFrama(df):
                                     "meanRedValue": redCell.mean(),
                                     "meanGreenValue": greenCell0.mean(),
                                     "score": score0,
-                                    "nuc_score":nuc_score0
+                                    "nuc_score": nuc_score0,
                                 }
                             ]
                         ),

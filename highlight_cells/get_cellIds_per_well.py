@@ -168,11 +168,11 @@ result = group_cells_by_image_and_color(totaldf)
 save_dict_to_json_file(result, "{}labelled_cells.json".format(CELLDIRECTORY))
 
 
-sub1,sub2 = em_clustering(df,"size","meanRedValue")
+sub1, sub2 = em_clustering(df, "size", "meanRedValue")
 sub1["color"] = "red"
 
 sub2["color"] = "blue"
-totaldf = combine_dataframes(sub1,sub2)
+totaldf = combine_dataframes(sub1, sub2)
 
 print(totaldf)
 

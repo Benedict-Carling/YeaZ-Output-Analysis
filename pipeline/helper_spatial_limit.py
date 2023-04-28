@@ -19,13 +19,13 @@ df = pd.read_pickle(CELLPATH)
 # Red 110 - 450
 
 
-def Limitdf(df, type: Literal["april5", "april6-4","april24-2","april24-3"]):
-    if type=="april24-2":
+def Limitdf(df, type: Literal["april5", "april6-4", "april24-2", "april24-3"]):
+    if type == "april24-2":
         df = df[df["size"] > 100]
         df = df[df["size"] < 600]
         df = df[df["meanRedValue"] > 180]
         df = df[df["meanRedValue"] < 450]
-    if type=="april24-3":
+    if type == "april24-3":
         df = df[df["size"] > 100]
         df = df[df["size"] < 600]
         df = df[df["meanRedValue"] > 180]
@@ -35,10 +35,17 @@ def Limitdf(df, type: Literal["april5", "april6-4","april24-2","april24-3"]):
         df = df[df["size"] < 700]
         df = df[df["meanRedValue"] > 110]
         df = df[df["meanRedValue"] < 450]
+    if type == "april6-2":
+        df = df[df["size"] > 130]
+        df = df[df["size"] < 700]
+        df = df[df["meanRedValue"] > 110]
+        df = df[df["meanRedValue"] < 450]
     return df
 
 
-def getAxisLimit(type: Literal["april5", "april6-4","april24-2","april24-3"]):
+def getAxisLimit(
+    type: Literal["april5", "april6-4", "april24-2", "april24-3", "april6-2"]
+):
     if type == "april24-2":
         return [100, 600, 180, 450]
     if type == "april24-3":
@@ -47,6 +54,8 @@ def getAxisLimit(type: Literal["april5", "april6-4","april24-2","april24-3"]):
         return [60, 700, 110, 350]
     if type == "april6-4":
         return [130, 700, 110, 450]
+    if type == "april6-2":
+        return [130, 700, 110, 350]
 
 
 # print(df)

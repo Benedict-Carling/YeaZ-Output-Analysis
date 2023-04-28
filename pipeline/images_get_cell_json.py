@@ -33,6 +33,7 @@ def group_cells_by_image_and_color(df):
 
     return results
 
+
 def save_dict_to_json_file(dict_data, file_path):
     """
     Save a dictionary to a JSON file
@@ -43,7 +44,8 @@ def save_dict_to_json_file(dict_data, file_path):
     with open(file_path, "w") as f:
         json.dump(dict_data, f)
 
+
 rawdf = pd.read_pickle(CELLPATH)
 df = getSubPopulationsMerged(rawdf, EXPERIMENTNAME, False)
 data = group_cells_by_image_and_color(df)
-save_dict_to_json_file(data,"{}labelled_cells.json".format(CELLDIRECTORY))
+save_dict_to_json_file(data, "{}labelled_cells.json".format(CELLDIRECTORY))

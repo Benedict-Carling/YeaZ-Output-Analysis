@@ -47,7 +47,7 @@ def em_clustering(df, x_axis, y_axis, num_clusters=2, confidence=0.90):
     subgroup1 = filtered_df[filtered_df["label"] == 0]
     subgroup2 = filtered_df[filtered_df["label"] == 1]
 
-        # Get the center of each cluster
+    # Get the center of each cluster
     print(gmm.means_)
     if gmm.means_[0][0] <= gmm.means_[1][0]:
         print("First group is the subgroup")
@@ -55,6 +55,7 @@ def em_clustering(df, x_axis, y_axis, num_clusters=2, confidence=0.90):
     else:
         print("Second group is the subgroup, swapping order")
         return subgroup2, subgroup1
+
 
 def combine_dataframes(*dfs):
     """
@@ -83,7 +84,7 @@ def filter_by_density(df, x_col, y_col):
     return filtered_df
 
 
-def graph(df, name, axis = False):
+def graph(df, name, axis=False):
     plt.clf()
     plt.cla()
     plt.scatter(df["size"], df["meanRedValue"], color=df["color"], s=5, alpha=0.03)
@@ -149,7 +150,7 @@ def getSubPopulationsMerged(df, type: Literal["april5", "april6-4"], with_graph=
         axis = getAxisLimit(type)
         densityCopy = dfclean.copy()
         densityCopy["color"] = "green"
-        graph(densityCopy, "Filter by density",axis)
+        graph(densityCopy, "Filter by density", axis)
 
     sub1, sub2 = em_clustering(dfclean, "size", "meanRedValue")
 
@@ -163,7 +164,7 @@ def getSubPopulationsMerged(df, type: Literal["april5", "april6-4"], with_graph=
     if with_graph:
         axis = getAxisLimit(type)
         subpopCopy = totaldf.copy()
-        graph(subpopCopy,"Expectation Maximisation",axis)
+        graph(subpopCopy, "Expectation Maximisation", axis)
     return totaldf
 
 

@@ -101,11 +101,15 @@ pandas_dict["ttest"] = pandas_dict.apply(calc_new_stat, axis=1)
 pandas_dict["ttest_p"] = pandas_dict.apply(calc_new_pvalue, axis=1)
 pandas_dict["high_mean"] = pandas_dict.apply(calc_new_high_value, axis=1)
 pandas_dict["low_mean"] = pandas_dict.apply(calc_new_low_value, axis=1)
-pandas_dict["Population most localised"] = pandas_dict.apply(calc_more_localised_direction, axis=1)
+pandas_dict["Population most localised"] = pandas_dict.apply(
+    calc_more_localised_direction, axis=1
+)
 
 print(pandas_dict)
 
-dataonly = pandas_dict[["ttest", "ttest_p", "high_mean","low_mean","Population most localised"]]
+dataonly = pandas_dict[
+    ["ttest", "ttest_p", "high_mean", "low_mean", "Population most localised"]
+]
 
 tfdf = getTfDf()
 

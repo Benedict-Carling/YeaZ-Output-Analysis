@@ -15,7 +15,7 @@ from analysis_directory import FILENAME
 
 rawdf = pd.read_pickle(CELLPATH)
 
-cleandf = getSubPopulationsMerged(rawdf,EXPERIMENTNAME)
+cleandf = getSubPopulationsMerged(rawdf, EXPERIMENTNAME)
 
 IMAGE = 55
 
