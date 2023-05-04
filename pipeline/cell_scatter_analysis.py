@@ -14,7 +14,7 @@ from helper_analysis_path import EXPERIMENTNAME
 pd.options.mode.chained_assignment = None
 
 
-def em_clustering(df, x_axis, y_axis, num_clusters=2, confidence=0.90):
+def em_clustering(df, x_axis, y_axis, num_clusters=2, confidence=0.85):
     # Get the values of the two axes
     x_values = df[x_axis].values.reshape(-1, 1)
     y_values = df[y_axis].values.reshape(-1, 1)

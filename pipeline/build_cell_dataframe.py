@@ -1,4 +1,4 @@
-from analysis_path import CELLDIRECTORY
+from helper_analysis_path import CELLDIRECTORY
 
 from typing import List
 import nd2

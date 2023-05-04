@@ -43,7 +43,7 @@ plt.xlabel("High subpopulation localisation score")
 plt.title("{} Cell Localisation Scores Graph: Max Localisation Ratio".format(FILENAME))
 
 
-def getScoreAxis(type: Literal["april5", "april6-4", "april23-2", "april23-3"]):
+def getScoreAxis(type: Literal["april5", "april6-4", "april23-2", "april23-3","20230503_171604_196"]):
     if type == "april5":
         return [1, 2.1, 1, 2.1]
     if type == "april6-4":
@@ -52,6 +52,8 @@ def getScoreAxis(type: Literal["april5", "april6-4", "april23-2", "april23-3"]):
         return [1, 1.8, 1, 1.8]
     if type == "april23-3":
         return [1, 1.8, 1, 1.8]
+    if type == "20230503_171604_196":
+        return [1,1.7,1,1.4]
 
 
 plt.axis(getScoreAxis(EXPERIMENTNAME))

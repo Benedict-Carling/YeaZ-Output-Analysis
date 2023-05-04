@@ -1,4 +1,4 @@
-EXPERIMENTNAME = "april6-2"
+EXPERIMENTNAME = "20230503_171604_196"
 CELLDIRECTORY = "data/" + EXPERIMENTNAME + "/"
 CELLPATH = CELLDIRECTORY + "cells-ratio-with-nuc.pkl"
-FILENAME = "April 6th - GLN 2 hours"
+FILENAME = "May 3rd - GLN 30 mins"

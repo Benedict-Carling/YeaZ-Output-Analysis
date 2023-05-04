@@ -10,7 +10,8 @@ CELLDIRECTORY = "data/" + EXPERIMENTNAME + "/"
 
 ND2FILE = CELLDIRECTORY + "ChannelMono,Red,Green,Blue_Seq0000.nd2"
 MASKFILE = CELLDIRECTORY + "newmaskfile.h5"
-CELLOUT = CELLDIRECTORY + "cells-ratio-with-nuc.pkl"
+CELLOUTPKL = CELLDIRECTORY + "cells-ratio-with-nuc.pkl"
+CELLOUTCSV = CELLDIRECTORY + "cells-ratio-with-nuc.csv"
 
 import warnings
 
@@ -326,6 +327,7 @@ print(totaldf)
 print(celldf)
 
 try:
-    celldf.to_pickle(CELLOUT)
+    celldf.to_pickle(CELLOUTPKL)
+    celldf.to_csv(CELLOUTCSV)
 except:
     print("Unable to print")
