@@ -7,7 +7,7 @@ import os
 
 folders = [
     "flow_data_analysis/data/Nlim1_Plate_1_4hrs/",
-    "flow_data_analysis/data/Nlim1_Plate_2_4hrs/"
+    "flow_data_analysis/data/Nlim1_Plate_2_4hrs/",
 ]
 
 # folders = [
@@ -23,6 +23,7 @@ for folder in folders:
             s = FlowCal.io.FCSData(folder + filename)
             frame = pd.DataFrame(s, columns=s.channels)
             flow_frame = pd.concat([flow_frame, frame])
+
 
 def graph(df, name, axis=False):
     plt.clf()
@@ -42,11 +43,11 @@ def graph(df, name, axis=False):
         dpi=200,
     )
 
+
 def scatter_with_histograms(df, x_col, y_col):
     # Create figure and axes for scatter plot and histograms
     fig, (ax_scatter, ax_hist_x, ax_hist_y) = plt.subplots(
-        nrows=1, ncols=3, figsize=(10, 4), 
-        gridspec_kw={'width_ratios': [4, 1, 1]}
+        nrows=1, ncols=3, figsize=(10, 4), gridspec_kw={"width_ratios": [4, 1, 1]}
     )
 
     # Create scatter plot
@@ -58,7 +59,7 @@ def scatter_with_histograms(df, x_col, y_col):
     ax_hist_x.set_yticks([])
 
     # Create histogram along y-axis
-    ax_hist_y.hist(df[y_col], bins=20, orientation='horizontal')
+    ax_hist_y.hist(df[y_col], bins=20, orientation="horizontal")
     ax_hist_y.set_ylim(ax_scatter.get_ylim())
     ax_hist_y.set_xticks([])
 
@@ -72,12 +73,13 @@ def scatter_with_histograms(df, x_col, y_col):
         dpi=200,
     )
 
+
 # Size is FSC-A
 # Red is 7-AAD-A
 
 # Stage 1 do the gating7-AAD-A
 # Plot the scatter graphs
 
-graph(flow_frame,"FSC-A",[0,10_000,0,2500])
+graph(flow_frame, "FSC-A", [0, 10_000, 0, 2500])
 
 print(flow_frame)
