@@ -4,3 +4,6 @@ data/**
 analysis_directory.py
 .DS_Store
 *.pyc
+.DS_Store
+.vscode/
+
