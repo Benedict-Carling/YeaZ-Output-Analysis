@@ -1,12 +1,12 @@
-from helper_analysis_path import CELLDIRECTORY
-
 from typing import List
 import nd2
 import numpy as np
 import pandas as pd
 import h5py
 from scipy.ndimage import gaussian_filter, binary_erosion, binary_dilation
+import sys
 
+CELLDIRECTORY = sys.argv[1]
 
 ND2FILE = CELLDIRECTORY + "ChannelMono,Red,Green,Blue_Seq0000.nd2"
 MASKFILE = CELLDIRECTORY + "newmaskfile.h5"
