@@ -43,34 +43,43 @@ plt.xlabel("High subpopulation localisation score")
 plt.title("{} Cell Localisation Scores Graph: Max Localisation Ratio".format(FILENAME))
 
 
-def getScoreAxis(
-    type: Literal["april5", "april6-4", "april23-2", "april23-3", "20230503_171604_196"]
-):
-    if type == "april5":
-        return [1, 2.1, 1, 2.1]
-    if type == "april6-4":
-        return [1, 1.8, 1, 1.8]
-    if type == "april23-2":
-        return [1, 1.8, 1, 1.8]
-    if type == "april23-3":
-        return [1, 1.8, 1, 1.8]
-    if type == "20230503_171604_196":
-        return [1, 1.7, 1, 1.4]
-
-
-plt.axis(getScoreAxis(EXPERIMENTNAME))
-# texts = [plt.text(y, z, x) for x, y, z in zip(dataframe["field-of-view"], x, y)]
-# adjust_text(texts, arrowprops=dict(arrowstyle="-", color="k", lw=0.1))
+plt.axis([x.min() - 0.1, x.max() + 0.1, y.min() - 0.1, y.max() + 0.1])
 
 a, b = np.polyfit(x, y, 1)
 plt.plot(x, a * x + b, color="grey", linestyle="solid", linewidth=1)
 
 plt.savefig(
-    "{}/{} Cell Localisation Scores Ratio Localisation.png".format(
+    "{}/{} Cell Localisation Scores Ratio Localisation - without labels.png".format(
         CELLDIRECTORY, FILENAME
     ),
     bbox_inches="tight",
     dpi=200,
 )
+
+plt.cla()
+plt.clf()
+
+plt.gcf().set_size_inches(16, 9)
+plt.scatter(x, y, color="steelblue", alpha=0.3)  # density=False would make counts
+plt.ylabel("Low subpopulation localisation score")
+plt.xlabel("High subpopulation localisation score")
+plt.title("{} Cell Localisation Scores Graph: Max Localisation Ratio".format(FILENAME))
+
+
+plt.axis([x.min() - 0.1, x.max() + 0.1, y.min() - 0.1, y.max() + 0.1])
+texts = [plt.text(y, z, x) for x, y, z in zip(dataframe["field-of-view"], x, y)]
+adjust_text(texts, arrowprops=dict(arrowstyle="-", color="k", lw=0.1))
+
+a, b = np.polyfit(x, y, 1)
+plt.plot(x, a * x + b, color="grey", linestyle="solid", linewidth=1)
+
+plt.savefig(
+    "{}/{} Cell Localisation Scores Ratio Localisation - with labels.png".format(
+        CELLDIRECTORY, FILENAME
+    ),
+    bbox_inches="tight",
+    dpi=200,
+)
+
 
 # plt.savefig("April5-hour4-2.png", dpi=200)
