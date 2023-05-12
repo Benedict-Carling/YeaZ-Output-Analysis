@@ -42,6 +42,7 @@ def em_clustering(df, x_axis, y_axis, num_clusters=2, confidence=0.85):
 
     # Filter the dataframe to include only the rows with high enough confidence
     filtered_df = df[df["max_prob"] >= confidence]
+    removed_cells = df[df["max_prob"] < confidence]
 
     # Split the filtered dataframe into two subgroups based on the predicted labels
     subgroup1 = filtered_df[filtered_df["label"] == 0]
@@ -51,10 +52,10 @@ def em_clustering(df, x_axis, y_axis, num_clusters=2, confidence=0.85):
     print(gmm.means_)
     if gmm.means_[0][0] <= gmm.means_[1][0]:
         print("First group is the subgroup")
-        return subgroup1, subgroup2
+        return subgroup1, subgroup2, removed_cells
     else:
         print("Second group is the subgroup, swapping order")
-        return subgroup2, subgroup1
+        return subgroup2, subgroup1, removed_cells
 
 
 def combine_dataframes(*dfs):
@@ -152,20 +153,23 @@ def getSubPopulationsMerged(df, type: Literal["april5", "april6-4"], with_graph=
         densityCopy["color"] = "green"
         graph(densityCopy, "Filter by density", axis)
 
-    sub1, sub2 = em_clustering(dfclean, "size", "meanRedValue")
+    sub1, sub2, removed_cells = em_clustering(dfclean, "size", "meanRedValue")
 
     sub1["color"] = "blue"
     sub1["population"] = "low"
     sub2["color"] = "red"
     sub2["population"] = "high"
+    removed_cells["color"] = "grey"
+    removed_cells["population"] = "none"
 
-    totaldf = combine_dataframes(sub1, sub2)
+    totaldf = combine_dataframes(sub1, sub2, removed_cells)
 
     if with_graph:
         axis = getAxisLimit(type)
         subpopCopy = totaldf.copy()
         graph(subpopCopy, "Expectation Maximisation", axis)
     return totaldf
+
 
 def getDensityFiltered(df, type: Literal["april5", "april6-4"], with_graph=False):
     df = Limitdf(df, type)

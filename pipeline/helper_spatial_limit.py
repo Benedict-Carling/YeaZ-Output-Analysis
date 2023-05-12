@@ -22,7 +22,12 @@ df = pd.read_pickle(CELLPATH)
 def Limitdf(
     df,
     type: Literal[
-        "april5", "april6-4", "april24-2", "april24-3", "20230503_205612_083", "20230503_203021_220"
+        "april5",
+        "april6-4",
+        "april24-2",
+        "april24-3",
+        "20230503_205612_083",
+        "20230503_203021_220",
     ],
 ):
     limits = getAxisLimit(type)
@@ -47,7 +52,7 @@ def getAxisLimit(
         "20230503_184638_666",
         "20230503_181027_601",
         "20230503_174429_594",
-        "20230503_171604_196"
+        "20230503_171604_196",
     ]
 ):
     if type == "april24-2":
@@ -76,7 +81,6 @@ def getAxisLimit(
         return [130, 580, 170, 370]
     if type == "20230503_171604_196":
         return [130, 580, 170, 370]
-
 
 
 # print(df)

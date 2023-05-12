@@ -10,6 +10,7 @@ def getTfDf():
     df = rawdf.set_index("image-index")
     return df
 
+
 tf = getTfDf()
 
 print(tf)

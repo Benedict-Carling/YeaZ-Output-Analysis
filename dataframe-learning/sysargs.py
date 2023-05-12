@@ -1,3 +1,3 @@
 import sys
 
-print('cmd entry:', sys.argv[1])
+print("cmd entry:", sys.argv[1])

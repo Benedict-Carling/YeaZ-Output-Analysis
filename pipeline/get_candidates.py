@@ -47,23 +47,25 @@ def calculate_z_scores(df):
 grouped = (
     df[["field-of-view", "population", "score"]]
     .groupby(["field-of-view", "population"])
-    .aggregate(["mean","count"])
+    .aggregate(["mean", "count"])
 )
 
-pivoted = grouped.pivot_table(index="field-of-view", columns=["population"], values=("score"))
+pivoted = grouped.pivot_table(
+    index="field-of-view", columns=["population"], values=("score")
+)
 print(pivoted)
 
 
 pivoted = pivoted.dropna()
-coeffs = np.polyfit(pivoted["mean"]['high'], pivoted["mean"]['low'], 1)
+coeffs = np.polyfit(pivoted["mean"]["high"], pivoted["mean"]["low"], 1)
 line = np.poly1d(coeffs)
 
 # calculate distance to line for each point
 distances = []
 for index, row in pivoted.iterrows():
-    x = row["mean"]['high']
-    y = row["mean"]['low']
-    distance = line(x) - y 
+    x = row["mean"]["high"]
+    y = row["mean"]["low"]
+    distance = line(x) - y
     distances.append(distance)
 
 # add distances as a new column to the dataframe
@@ -76,14 +78,12 @@ pivoted = pivoted.join(tfdf)
 print(pivoted)
 
 total_cells = grouped = (
-    df[["field-of-view", "score"]]
-    .groupby(["field-of-view"])
-    .count()
+    df[["field-of-view", "score"]].groupby(["field-of-view"]).count()
 )
 total_cells["total_cell_number"] = total_cells["score"]
 
 pivoted = pivoted.join(total_cells["total_cell_number"])
 
-pivoted.to_csv("{}/{} Candidates v4.csv".format(
-        CELLDIRECTORY, FILENAME
-    ),)
+pivoted.to_csv(
+    "{}/{} Candidates v4.csv".format(CELLDIRECTORY, FILENAME),
+)
