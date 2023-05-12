@@ -2,7 +2,7 @@ import math
 
 import numpy as np
 import scipy
-from cell_scatter_analysis import getSubPopulationsMerged
+from cell_scatter_analysis import getSubPopulationsMerged, getDensityFiltered
 
 from tf_library_mapping import getTfDf
 import scipy.stats as stats
@@ -17,6 +17,7 @@ from helper_analysis_path import FILENAME
 rawdf = pd.read_pickle(CELLPATH)
 
 df = getSubPopulationsMerged(rawdf, EXPERIMENTNAME)
+dfclean = getDensityFiltered(rawdf, EXPERIMENTNAME)
 
 print(df)
 
@@ -46,18 +47,22 @@ def calculate_z_scores(df):
 grouped = (
     df[["field-of-view", "population", "score"]]
     .groupby(["field-of-view", "population"])
-    .mean()
+    .aggregate(["mean","count"])
 )
-pivoted = df.pivot_table(index="field-of-view", columns="population", values="score")
-pivoted = pivoted.dropna(subset=['high', 'low'])
-coeffs = np.polyfit(pivoted['high'], pivoted['low'], 1)
+
+pivoted = grouped.pivot_table(index="field-of-view", columns=["population"], values=("score"))
+print(pivoted)
+
+
+pivoted = pivoted.dropna()
+coeffs = np.polyfit(pivoted["mean"]['high'], pivoted["mean"]['low'], 1)
 line = np.poly1d(coeffs)
 
 # calculate distance to line for each point
 distances = []
 for index, row in pivoted.iterrows():
-    x = row['high']
-    y = row['low']
+    x = row["mean"]['high']
+    y = row["mean"]['low']
     distance = line(x) - y 
     distances.append(distance)
 
@@ -65,51 +70,20 @@ for index, row in pivoted.iterrows():
 pivoted["distance to line of best fit"] = distances
 
 
+pivoted["high/low ratio"] = pivoted["mean"]["high"] / pivoted["mean"]["low"]
 tfdf = getTfDf()
 pivoted = pivoted.join(tfdf)
+print(pivoted)
 
-# pivoted["high/low ratio"] = pivoted["high"] / pivoted["low"]
-# print(grouped.head())
-# print(pivoted.head())
+total_cells = grouped = (
+    df[["field-of-view", "score"]]
+    .groupby(["field-of-view"])
+    .count()
+)
+total_cells["total_cell_number"] = total_cells["score"]
 
-# tfdf = getTfDf()
-# pivoted = pivoted.join(tfdf)
+pivoted = pivoted.join(total_cells["total_cell_number"])
 
-# # with_z_scores = calculate_z_scores(pivoted)
-# # with_z_scores["p_scores"] = scipy.stats.norm.sf(abs(with_z_scores["z_scores"])) * 2
-
-# idx = np.isfinite(pivoted["high"]) & np.isfinite(pivoted["low"])
-# print(idx)
-# coeffs = np.polyfit(pivoted["high"][idx],pivoted["low"][idx],1)
-
-# line = np.poly1d(coeffs)
-
-# # calculate distance to line for each point
-# distances = []
-# for index, row in pivoted.iterrows():
-#     x = row['high']
-#     y = row['low']
-#     distance = line(x) - y / np.sqrt(1 + coeffs[0]**2)
-#     distances.append(distance)
-
-# # add distances as a new column to the dataframe
-# pivoted['distance_to_line_of_best_fit'] = distances
-
-# # check if the point is above or below the line and assign the sign accordingly
-# for index, row in pivoted.iterrows():
-#     high = row['high']
-#     low = row['low']
-#     predicted_low = line(high)
-#     if low > predicted_low:
-#         pivoted.at[index, 'distance_to_line_of_best_fit'] = abs(pivoted.at[index, 'distance_to_line_of_best_fit'])
-#     else:
-#         pivoted.at[index, 'distance_to_line_of_best_fit'] = -abs(pivoted.at[index, 'distance_to_line_of_best_fit'])
-
-# with_z_scores = calculate_z_scores(pivoted)
-# with_z_scores["p_scores"] = scipy.stats.norm.sf(abs(with_z_scores["z_scores"])) * 2
-
-# print(with_z_scores.sort_values("p_scores"))
-
-pivoted.sort_values("distance to line of best fit").to_csv("{}/{} Candidates v3.csv".format(
+pivoted.to_csv("{}/{} Candidates v4.csv".format(
         CELLDIRECTORY, FILENAME
     ),)
