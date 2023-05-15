@@ -2,71 +2,87 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import ttest_ind
+from timelapse_path import CELLDIRECTORY
 
 files = [
-    {"site": "1&2", "name": 1, "path": "tracking-analysis/fov1-0-30 copy.csv"},
-    {"site": "1&2", "name": 2, "path": "tracking-analysis/fov2-0-30 copy.csv"},
-    {"site": "3&4", "name": 3, "path": "tracking-analysis/fov3-0-30 copy.csv"},
-    {"site": "3&4", "name": 4, "path": "tracking-analysis/fov4-0-30 copy.csv"},
-    {"site": "5&6", "name": 5, "path": "tracking-analysis/fov5-0-30 copy.csv"},
-    {"site": "5&6", "name": 6, "path": "tracking-analysis/fov6-0-30 copy.csv"},
-    {"site": "7&8", "name": 7, "path": "tracking-analysis/fov7-0-30 copy.csv"},
-    {"site": "7&8", "name": 8, "path": "tracking-analysis/fov8-0-30 copy.csv"},
+    {"site": "PRO", "name": 1, "path": "1.csv"},
+    {"site": "PRO", "name": 2, "path": "2.csv"},
+    {"site": "PRO", "name": 3, "path": "3.csv"},
+    {"site": "PRO", "name": 4, "path": "4.csv"},
+    {"site": "PRO", "name": 5, "path": "5.csv"},
+    {"site": "PRO", "name": 6, "path": "6.csv"},
+    {"site": "PRO", "name": 7, "path": "7.csv"},
+    {"site": "PRO", "name": 8, "path": "8.csv"},
+    {"site": "GLN", "name": 9, "path": "9.csv"},
+    {"site": "GLN", "name": 10, "path": "10.csv"},
+    {"site": "GLN", "name": 11, "path": "11.csv"},
+    {"site": "GLN", "name": 12, "path": "12.csv"},
+    {"site": "GLN", "name": 13, "path": "13.csv"},
+    {"site": "GLN", "name": 14, "path": "14.csv"},
+    {"site": "GLN", "name": 15, "path": "15.csv"},
+    {"site": "GLN", "name": 16, "path": "16.csv"},
+    {"site": "CTRL", "name": 17, "path": "17.csv"},
+    {"site": "CTRL", "name": 18, "path": "18.csv"},
+    {"site": "CTRL", "name": 19, "path": "19.csv"},
+    {"site": "CTRL", "name": 20, "path": "20.csv"},
+    {"site": "CTRL", "name": 21, "path": "21.csv"},
+    {"site": "CTRL", "name": 22, "path": "22.csv"},
 ]
 
 
-def getCleanCells(newOnly: bool = False):
+def getCleanCells(newOnly: bool = False, oldOnly: bool = False):
     allcells = pd.DataFrame()
 
     for file in files:
-        df = pd.read_csv(file["path"])
+        df = pd.read_csv(CELLDIRECTORY + file["path"])
+        df["Name"] = file["name"]
+        df["Site"] = file["site"]
         # Cut in time
-        df = df[df["Time"] <= 24]
+        df = df[df["Time"] <= 72]
         # Remove cells whose trajectory includes size over 154
-        large_cells_ids = df[df["Area"] >= 155]["Cell"].unique()
+        large_cells_ids = df[df["Area"] >= 1050]["Cell"].unique()
         df = df[~df["Cell"].isin(large_cells_ids)]
         # Remove cells whose growth includes a jump over 24 pixels
         df["Growth"] = df.groupby("Cell")["Area"].diff()
-        large_growth_ids = df[df["Growth"] >= 25]["Cell"].unique()
+        large_growth_ids = df[df["Growth"] >= 220]["Cell"].unique()
         df = df[~df["Cell"].isin(large_growth_ids)]
-        # Remove new cells whose first appearance is greater the 40
+        # # Remove new cells whose first appearance is greater the 40 (150)
         initial_present_cell_ids = df[df["Time"] == 0]["Cell"].unique()
         new_cells = df[~df["Cell"].isin(initial_present_cell_ids)]
         new_cells_first = new_cells.groupby(
             "Cell",
             as_index=False,
         ).first()
-        non_valid_new_cells = new_cells_first[new_cells_first["Area"] >= 40]["Cell"]
+        non_valid_new_cells = new_cells_first[new_cells_first["Area"] >= 200]["Cell"]
         df = df[~df["Cell"].isin(non_valid_new_cells)]
-        df["Name"] = file["name"]
-        df["Site"] = file["site"]
         # I have realised that it works if i dont try to change it into a string, it needs to be the same type
         df = df.assign(Cell=lambda x: x.Name * 10_000 + x.Cell)
         # Remove cells if they have dissapered within 2 hours of appearing
-        disappearedWithTimeCount = df.groupby(["Cell"], as_index=False).agg(
-            {"Time": "count", "Disappeared in video": "any"}
-        )
-        disappeared = disappearedWithTimeCount[
-            disappearedWithTimeCount["Disappeared in video"] == True
-        ]
-        disappearIds = disappeared["Cell"]
-        df = df[~df["Cell"].isin(disappearIds)]
+        # disappearedWithTimeCount = df.groupby(["Cell"], as_index=False).agg(
+        #     {"Time": "count", "Disappeared in video": "any"}
+        # )
+        # disappeared = disappearedWithTimeCount[
+        #     disappearedWithTimeCount["Disappeared in video"] == True
+        # ]
+        # disappearIds = disappeared["Cell"]
+        # df = df[~df["Cell"].isin(disappearIds)]
         # Comment to remove initally present cells
         if newOnly:
             initial_present_cell_ids = df[df["Time"] == 0]["Cell"].unique()
             df = df[~df["Cell"].isin(initial_present_cell_ids)]
+        
+        if oldOnly:
+            initial_present_cell_ids = df[df["Time"] == 0]["Cell"].unique()
+            df = df[df["Cell"].isin(initial_present_cell_ids)]
 
         allcells = pd.concat([allcells, df])
 
     return allcells
 
 
-allcells = getCleanCells(newOnly=True)
-print(allcells)
-
 # Divisions Estimate
-table = pd.pivot_table(allcells, values=["Area"], columns=["Time"], index="Cell")
-print(table["0"])
+# table = pd.pivot_table(allcells, values=["Area"], columns=["Time"], index="Cell")
+# print(table["0"])
 
 # Max Trajectories Including all trajectories
 # Site - Mean

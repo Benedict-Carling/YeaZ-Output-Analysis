@@ -77,13 +77,18 @@ tfdf = getTfDf()
 pivoted = pivoted.join(tfdf)
 print(pivoted)
 
-total_cells = grouped = (
-    df[["field-of-view", "score"]].groupby(["field-of-view"]).count()
-)
+total_cells = df[["field-of-view", "score"]].groupby(["field-of-view"]).count()
 total_cells["total_cell_number"] = total_cells["score"]
 
 pivoted = pivoted.join(total_cells["total_cell_number"])
 
+# total_score = (
+#     df[["field-of-view", "score"]].groupby(["field-of-view"]).mean()
+# )
+# total_score["mean_cell_score"] = total_score["score"]
+
+# pivoted = pivoted.join(total_score["mean_cell_score"])
+
 pivoted.to_csv(
-    "{}/{} Candidates v4.csv".format(CELLDIRECTORY, FILENAME),
+    "{}/{} Candidates v5.csv".format(CELLDIRECTORY, FILENAME),
 )
