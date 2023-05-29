@@ -16,16 +16,25 @@
 # EXPERIMENTNAME = "20230503_195034_753"
 # FILENAME = "May 3rd - PRO 2_30"
 
+EXPERIMENTNAME = "20230503_203021_220"
+FILENAME = "May 3rd - GLN 3_30"
+
+# EXPERIMENTNAME = "20230503_205612_083"
+# FILENAME = "May 3rd - PRO 3_30"
+
 # EXPERIMENTNAME = "20230503_203021_220"
 # FILENAME = "May 3rd - GLN 3_30"
 
-EXPERIMENTNAME = "20230503_205612_083"
-FILENAME = "May 3rd - PRO 3_30"
+# EXPERIMENTNAME = "april6-4"
+# FILENAME = "April 6th - GLN 4 hours"
 
+EXPERIMENTNAME = "april5"
+FILENAME = "April 5th - 4 hour Proline"
 
 CELLDIRECTORY = (
-    "/Users/benedictcarling/OneDrive - Imperial College London/Benedict_MEng_project/Microscopy_Data_Synbicite/"
+    # "/Users/benedictcarling/OneDrive - Imperial College London/Benedict_MEng_project/Microscopy_Data_Synbicite/"
+    "data/"
     + EXPERIMENTNAME
     + "/"
 )
-CELLPATH = CELLDIRECTORY + "cells-ratio-with-nuc.pkl"
+CELLPATH = CELLDIRECTORY + "cells-ssim-win7.pkl"

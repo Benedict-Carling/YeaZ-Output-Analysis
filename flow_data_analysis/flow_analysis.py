@@ -6,8 +6,8 @@ import math
 import os
 
 folders = [
-    "flow_data_analysis/data/Nlim1_Plate_1_4hrs/",
-    "flow_data_analysis/data/Nlim1_Plate_2_4hrs/",
+    "flow_data_analysis/data/46_GLN/exponential plate 1/",
+    "flow_data_analysis/data/46_GLN/exponential plate 2/",
 ]
 
 # folders = [
@@ -82,4 +82,9 @@ def scatter_with_histograms(df, x_col, y_col):
 
 graph(flow_frame, "FSC-A", [0, 10_000, 0, 2500])
 
-print(flow_frame)
+print(flow_frame[["FSC-A", "SSC-A", "7-AAD-A"]].iloc[::2, :])
+flow_frame[["FSC-A", "SSC-A", "7-AAD-A"]].iloc[::2, :].to_csv(
+    "6th April - 0 hour exponential - Flow Data.csv"
+)
+
+

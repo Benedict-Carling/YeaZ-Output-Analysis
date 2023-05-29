@@ -38,7 +38,7 @@ def getCleanCells(newOnly: bool = False, oldOnly: bool = False):
         df["Name"] = file["name"]
         df["Site"] = file["site"]
         # Cut in time
-        df = df[df["Time"] <= 72]
+        df = df[df["Time"] <=60]
         # Remove cells whose trajectory includes size over 154
         large_cells_ids = df[df["Area"] >= 1050]["Cell"].unique()
         df = df[~df["Cell"].isin(large_cells_ids)]
@@ -70,7 +70,7 @@ def getCleanCells(newOnly: bool = False, oldOnly: bool = False):
         if newOnly:
             initial_present_cell_ids = df[df["Time"] == 0]["Cell"].unique()
             df = df[~df["Cell"].isin(initial_present_cell_ids)]
-        
+
         if oldOnly:
             initial_present_cell_ids = df[df["Time"] == 0]["Cell"].unique()
             df = df[df["Cell"].isin(initial_present_cell_ids)]

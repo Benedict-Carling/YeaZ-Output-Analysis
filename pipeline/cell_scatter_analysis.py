@@ -177,5 +177,5 @@ def getDensityFiltered(df, type: Literal["april5", "april6-4"], with_graph=False
     return dfclean
 
 
-df = pd.read_pickle(CELLPATH)
-getSubPopulationsMerged(df, EXPERIMENTNAME, True)
+# df = pd.read_pickle(CELLPATH)
+# getSubPopulationsMerged(df, EXPERIMENTNAME, True)

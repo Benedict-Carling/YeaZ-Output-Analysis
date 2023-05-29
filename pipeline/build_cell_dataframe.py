@@ -10,7 +10,7 @@ CELLDIRECTORY = sys.argv[1]
 
 ND2FILE = CELLDIRECTORY + "ChannelMono,Red,Green,Blue_Seq0000.nd2"
 MASKFILE = CELLDIRECTORY + "newmaskfile.h5"
-CELLOUT = CELLDIRECTORY + "cells-ratio-with-nuc.pkl"
+CELLOUT = CELLDIRECTORY + "cells-ratio-with-nuc-check.pkl"
 
 import warnings
 

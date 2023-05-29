@@ -56,7 +56,7 @@ pivoted = grouped.pivot_table(
 print(pivoted)
 
 
-pivoted = pivoted.dropna()
+pivoted = pivoted.dropna(subset=[("mean", "high"), ("mean", "low")])
 coeffs = np.polyfit(pivoted["mean"]["high"], pivoted["mean"]["low"], 1)
 line = np.poly1d(coeffs)
 
@@ -90,5 +90,5 @@ pivoted = pivoted.join(total_cells["total_cell_number"])
 # pivoted = pivoted.join(total_score["mean_cell_score"])
 
 pivoted.to_csv(
-    "{}/{} Candidates v5.csv".format(CELLDIRECTORY, FILENAME),
+    "{}/{} Candidates v6.csv".format(CELLDIRECTORY, FILENAME),
 )
