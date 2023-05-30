@@ -41,15 +41,8 @@ totalcounts_old["mean max growth (/trajectory)"] = olddf.groupby("Cell").max().g
 
 totalcounts_old = totalcounts_old.rename(index=dict(zip(["CTRL","GLN","PRO"],["CTRL-old","GLN-old","PRO-old"])))
 
-totalcounts = pd.concat([totalcounts,totalcounts_old])
-print(" ")
-print(totalcounts)
-totalcounts.to_csv("Timelapse Population Stats.csv")
 
 newdf["Initially Present"] = False
 olddf["Initially Present"] = True
 
-cells = pd.concat([newdf,olddf])
-cells = cells.drop(["Variance","Total Intensity","Center of Mass X","Center of Mass Y","Angle of Major Axis","Length Major Axis","Length Minor Axis","Disappeared in video"],axis=1)
-cells.to_csv("timelapse all cells.csv")
-
+totalcounts = pd.concat([totalcounts,totalcounts_old])
