@@ -19,3 +19,9 @@ The Yeaz Output Analysis repository is organized into several folders:
 ### Repository Housekeeping
 This repository is formatted with [black](https://black.readthedocs.io/en/stable/), a Python formatter that helps maintain code readability and consistency. It is used to ensure that code is formatted consistently throughout the repository.
 
+### Pipeline
+1. Obtain nd2 file from microscope
+2. Before using this repo, you should obtain a h5 cell mask file corresponding to the nd2 file using YEAZ. Now you should have the two input files ready to progress with this pipeline. This can be done using the gui or the cli
+3. As these files are often very big, we use the file `pipeline/build_cell_dataframe.py` to aggregate the nd2 file and the h5 mask file into a pkl file (a file holding a pandas dataframe). This file holds a dataframe of all cells within the nd2 file along with relevant metrics such as cell-size, meanflourescence or a custom score. Please edit this file for your own applications
+4. Once you have the pkl file, the saved variation of the pandas dataframe containing rows for each cell. Most other files in the pipeline folder begin with reading the dataframe back into a variable for filtering, mapping through it in different ways. Such as assigning the cells to sub populations, or aggregating cell statistics by location. Browse the `pipeline` folder for inspiration
+
